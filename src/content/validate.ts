@@ -174,6 +174,15 @@ export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
   });
 
   dataset.media.forEach((item, index) => {
+    if (!item.description?.trim()) {
+      issues.push(
+        issue(
+          'MISSING_MEDIA_DESCRIPTION',
+          `media[${index}].description`,
+          '影音条目必须提供简介。',
+        ),
+      );
+    }
     if (item.status === 'published' && !item.url?.trim()) {
       issues.push(
         issue(
@@ -213,6 +222,16 @@ export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
         ),
       );
     }
+    if (!activity.image) {
+      issues.push(
+        issue(
+          'MISSING_ACTIVITY_IMAGE',
+          `activities[${index}].image`,
+          '活动必须提供图片对象。',
+        ),
+      );
+      return;
+    }
     if (!activity.image.src.trim()) {
       issues.push(
         issue(
@@ -243,6 +262,15 @@ export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
   });
 
   dataset.archives.forEach((archive, index) => {
+    if (!archive.year?.trim()) {
+      issues.push(
+        issue(
+          'MISSING_ARCHIVE_YEAR',
+          `archives[${index}].year`,
+          '档案必须提供可展示年份。',
+        ),
+      );
+    }
     if (!SOURCE_ID_PATTERN.test(archive.sourceId)) {
       issues.push(
         issue(

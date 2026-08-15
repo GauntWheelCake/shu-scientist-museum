@@ -23,7 +23,7 @@ export const activities: Activity[] = [
     status: 'planned',
     type: 'branch',
     image: {
-      src: '/images/activities/source-practice-plan-branch-2026.webp',
+      src: '/images/activities/2026-07-01-shanghai-university-01.webp',
       alt: '科学家精神进支部计划示意图',
       sourceId: 'source-practice-plan-branch',
     },
@@ -41,7 +41,7 @@ export const activities: Activity[] = [
     status: 'planned',
     type: 'school',
     image: {
-      src: '/images/activities/source-practice-plan-school-2026.webp',
+      src: '/images/activities/2026-07-01-shanghai-university-affiliated-primary-school-01.webp',
       alt: '科学家精神进校园计划示意图',
       sourceId: 'source-practice-plan-school',
     },
@@ -59,7 +59,7 @@ export const activities: Activity[] = [
     status: 'planned',
     type: 'community',
     image: {
-      src: '/images/activities/source-practice-plan-community-2026.webp',
+      src: '/images/activities/2026-07-01-youyi-road-community-01.webp',
       alt: '科学家精神进社区计划示意图',
       sourceId: 'source-practice-plan-community',
     },
@@ -76,7 +76,7 @@ export const activities: Activity[] = [
     status: 'planned',
     type: 'military',
     image: {
-      src: '/images/activities/source-practice-plan-military-2026.webp',
+      src: '/images/activities/2026-07-01-nanjing-road-memorial-01.webp',
       alt: '科学家精神进军营计划示意图',
       sourceId: 'source-practice-plan-military',
     },

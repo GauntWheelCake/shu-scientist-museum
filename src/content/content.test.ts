@@ -113,6 +113,32 @@ describe('validateContent', () => {
       ]),
     );
   });
+
+  it('returns issues instead of throwing when required public metadata is absent', () => {
+    const invalidDataset: ContentDataset = {
+      scientists,
+      stories,
+      events,
+      archives: [{ ...archives[0], year: '' }],
+      activities: [
+        {
+          ...activities[0],
+          image: undefined as never,
+        },
+      ],
+      media: [{ ...media[0], description: '' }],
+      spiritThemes,
+    };
+
+    expect(() => validateContent(invalidDataset)).not.toThrow();
+    expect(validateContent(invalidDataset)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: 'MISSING_ARCHIVE_YEAR' }),
+        expect.objectContaining({ code: 'MISSING_MEDIA_DESCRIPTION' }),
+        expect.objectContaining({ code: 'MISSING_ACTIVITY_IMAGE' }),
+      ]),
+    );
+  });
 });
 
 describe('museum content', () => {
@@ -161,14 +187,16 @@ describe('museum content', () => {
       .join('');
 
     expect(qianWeichang?.chapters.map(({ title }) => title)).toEqual([
-      '航空太空领域研究',
-      '板壳内禀统一理论',
-      '从固体到流体的应用力学探索',
+      '板壳非线性内禀统一理论',
+      '圆薄板大挠度摄动解',
+      '航空航天与奇异摄动研究',
     ]);
-    expect(chapterText).toMatch(/航空太空/);
-    expect(chapterText).toMatch(/板壳/);
-    expect(chapterText).toMatch(/固体/);
-    expect(chapterText).toMatch(/流体/);
+    expect(chapterText).toMatch(/钱伟长方程/);
+    expect(chapterText).toMatch(/中心挠度/);
+    expect(chapterText).toMatch(/钱伟长方法/);
+    expect(chapterText).toMatch(/火箭/);
+    expect(chapterText).toMatch(/导弹/);
+    expect(chapterText).toMatch(/奇异摄动理论/);
     expect(chapterText).not.toMatch(/转向物理|教育改革|校长任职/);
   });
 
@@ -190,6 +218,13 @@ describe('museum content', () => {
           image.src.length > 0 &&
           image.alt.length > 0 &&
           image.sourceId.length > 0,
+      ),
+    ).toBe(true);
+    expect(
+      activities.every(({ image }) =>
+        /^\/images\/activities\/\d{4}-\d{2}-\d{2}-[a-z0-9-]+-\d+\.webp$/.test(
+          image.src,
+        ),
       ),
     ).toBe(true);
     expect(media.every(({ description }) => description.length > 0)).toBe(
