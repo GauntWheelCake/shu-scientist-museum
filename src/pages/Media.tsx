@@ -1,4 +1,5 @@
 import { type JSX } from 'react';
+import { getPageMeta } from '../app/site-meta';
 import { PageIntro } from '../components/common/PageIntro';
 import { ResilientImage } from '../components/common/ResilientImage';
 import { media } from '../content/media';
@@ -6,7 +7,7 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { mediaAction } from './mediaAction';
 
 export function Media(): JSX.Element {
-  useDocumentTitle('影音档案｜上海大学科学家精神主题宣传馆');
+  useDocumentTitle(getPageMeta('/media'));
 
   return (
     <>

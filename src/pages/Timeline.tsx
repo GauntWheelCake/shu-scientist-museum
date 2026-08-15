@@ -1,4 +1,5 @@
 import { type JSX } from 'react';
+import { getPageMeta } from '../app/site-meta';
 import { Link } from 'react-router-dom';
 import { PageIntro } from '../components/common/PageIntro';
 import { TimelineLine } from '../components/motion/TimelineLine';
@@ -24,7 +25,7 @@ function sortedEvents(source: TimelineEvent[]): TimelineEvent[] {
 }
 
 export function Timeline(): JSX.Element {
-  useDocumentTitle('岁月长河｜上海大学科学家精神主题宣传馆');
+  useDocumentTitle(getPageMeta('/timeline'));
   const orderedEvents = sortedEvents(events);
 
   return (

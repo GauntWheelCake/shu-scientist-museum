@@ -1,4 +1,5 @@
 import { type JSX } from 'react';
+import { getPageMeta } from '../app/site-meta';
 import { useSearchParams } from 'react-router-dom';
 import { EmptyState } from '../components/common/EmptyState';
 import { PageIntro } from '../components/common/PageIntro';
@@ -12,7 +13,7 @@ const fields = Array.from(new Set(scientists.flatMap((scientist) => scientist.fi
 );
 
 export function Gallery(): JSX.Element {
-  useDocumentTitle('前辈群像｜上海大学科学家精神主题宣传馆');
+  useDocumentTitle(getPageMeta('/scientists'));
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedField = searchParams.get('field') ?? '';
   const requestedSpirit = searchParams.get('spirit') ?? '';

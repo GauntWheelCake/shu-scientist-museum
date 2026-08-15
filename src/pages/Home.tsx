@@ -1,5 +1,6 @@
 import { type JSX } from 'react';
 import { Link } from 'react-router-dom';
+import { getPageMeta } from '../app/site-meta';
 import { SectionHeading } from '../components/common/SectionHeading';
 import { CountUp } from '../components/motion/CountUp';
 import { Reveal } from '../components/motion/Reveal';
@@ -9,6 +10,7 @@ import { events } from '../content/events';
 import { media } from '../content/media';
 import { scientists } from '../content/scientists';
 import { spiritThemes } from '../content/spirit-themes';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const guideItems = [
   { to: '/scientists', index: '01', title: '前辈群像', description: '从人物专题走近科学选择。' },
@@ -20,6 +22,7 @@ const guideItems = [
 ] as const;
 
 export function Home(): JSX.Element {
+  useDocumentTitle(getPageMeta('/'));
   const featuredScientists = scientists.filter((scientist) => scientist.featured).slice(0, 3);
   const selectedEvents = events.slice(0, 4);
   const plannedActivities = activities.filter((activity) => activity.status === 'planned');

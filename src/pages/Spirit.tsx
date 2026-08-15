@@ -1,4 +1,5 @@
 import { type JSX } from 'react';
+import { getPageMeta } from '../app/site-meta';
 import { Link, useSearchParams } from 'react-router-dom';
 import { PageIntro } from '../components/common/PageIntro';
 import { scientists, stories } from '../content/scientists';
@@ -6,7 +7,7 @@ import { spiritThemes } from '../content/spirit-themes';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export function Spirit(): JSX.Element {
-  useDocumentTitle('精神谱系｜上海大学科学家精神主题宣传馆');
+  useDocumentTitle(getPageMeta('/spirit'));
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedTheme = searchParams.get('theme');
   const selectedTheme =

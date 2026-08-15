@@ -1,9 +1,10 @@
 import { type JSX } from 'react';
+import { getPageMeta } from '../app/site-meta';
 import { Link } from 'react-router-dom';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export function NotFound(): JSX.Element {
-  useDocumentTitle('页面未找到｜上海大学科学家精神主题宣传馆');
+  useDocumentTitle(getPageMeta('/not-found'));
 
   return (
     <section className="not-found" aria-labelledby="not-found-title">

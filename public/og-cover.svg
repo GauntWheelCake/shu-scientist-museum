@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">上海大学科学家精神数字展馆</title>
+  <desc id="description">红色文化、科技档案与现代博物馆风格的文字封面</desc>
+  <rect width="1200" height="630" fill="#F3EFE7" />
+  <rect width="1200" height="56" fill="#8F1D22" />
+  <rect x="72" y="112" width="12" height="390" fill="#C52A2F" />
+  <path d="M890 102H1128V340H1096V134H890Z" fill="#D5C5A6" />
+  <path d="M928 166H1128V366H1096V198H928Z" fill="#A68452" />
+  <path d="M864 418H1128V430H864ZM864 454H1072V466H864ZM864 490H1016V502H864Z" fill="#171717" />
+  <text x="120" y="206" fill="#8F1D22" font-family="serif" font-size="30" font-weight="700" letter-spacing="6">SHU · SCIENTIST · ARCHIVE</text>
+  <text x="120" y="314" fill="#171717" font-family="serif" font-size="64" font-weight="700">上海大学科学家精神</text>
+  <text x="120" y="400" fill="#171717" font-family="serif" font-size="64" font-weight="700">数字展馆</text>
+  <text x="120" y="482" fill="#8F1D22" font-family="sans-serif" font-size="28">追寻前辈榜样，筑梦科技自立自强</text>
+  <circle cx="1040" cy="240" r="58" fill="#8F1D22" />
+  <circle cx="1040" cy="240" r="22" fill="#F3EFE7" />
+</svg>

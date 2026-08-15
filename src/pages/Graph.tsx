@@ -1,4 +1,5 @@
 import { type JSX } from 'react';
+import { getPageMeta } from '../app/site-meta';
 import { ScientistGraph } from '../components/graph/ScientistGraph';
 import { PageIntro } from '../components/common/PageIntro';
 import { scientists } from '../content/scientists';
@@ -6,7 +7,7 @@ import { spiritThemes } from '../content/spirit-themes';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export function Graph(): JSX.Element {
-  useDocumentTitle('科学家图谱｜上海大学科学家精神主题宣传馆');
+  useDocumentTitle(getPageMeta('/graph'));
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { useState, type JSX } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { getPageMeta } from '../app/site-meta';
 import { ArchiveViewer } from '../components/archive/ArchiveViewer';
 import { ScientistHero } from '../components/scientist/ScientistHero';
 import { ScientistTimeline } from '../components/scientist/ScientistTimeline';
@@ -13,11 +14,7 @@ export function ScientistDetail(): JSX.Element {
   const { slug = '' } = useParams();
   const scientist = scientists.find((candidate) => candidate.slug === slug);
   const [activeArchiveId, setActiveArchiveId] = useState<string | null>(null);
-  useDocumentTitle(
-    scientist
-      ? `${scientist.name}｜上海大学科学家精神主题宣传馆`
-      : '页面未找到｜上海大学科学家精神主题宣传馆',
-  );
+  useDocumentTitle(getPageMeta(`/scientists/${slug}`));
 
   if (!scientist) {
     return (

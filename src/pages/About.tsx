@@ -1,11 +1,12 @@
 import { type JSX } from 'react';
+import { getPageMeta } from '../app/site-meta';
 import { PageIntro } from '../components/common/PageIntro';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const practiceChain = ['事迹挖掘', '内容创作', '全域宣讲', '数字传播'];
 
 export function About(): JSX.Element {
-  useDocumentTitle('关于项目｜上海大学科学家精神主题宣传馆');
+  useDocumentTitle(getPageMeta('/about'));
 
   return (
     <>

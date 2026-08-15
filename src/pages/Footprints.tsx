@@ -1,4 +1,5 @@
 import { useMemo, useState, type JSX } from 'react';
+import { getPageMeta } from '../app/site-meta';
 import { PageIntro } from '../components/common/PageIntro';
 import { ResilientImage } from '../components/common/ResilientImage';
 import { activities } from '../content/activities';
@@ -22,7 +23,7 @@ const activityTypeLabels: Record<ActivityType, string> = {
 };
 
 export function Footprints(): JSX.Element {
-  useDocumentTitle('精神足迹｜上海大学科学家精神主题宣传馆');
+  useDocumentTitle(getPageMeta('/footprints'));
   const [selectedType, setSelectedType] = useState<'all' | ActivityType>('all');
   const displayedActivities = useMemo(
     () => activities.filter((activity) => selectedType === 'all' || activity.type === selectedType),
