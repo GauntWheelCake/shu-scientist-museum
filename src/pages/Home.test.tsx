@@ -60,7 +60,6 @@ it.each([
 
 it('serves the digital foyer at the root route', async () => {
   installReducedMotionPreference(true);
-  await appRouter.navigate('/');
   render(<RouterProvider router={appRouter} />);
 
   expect(
