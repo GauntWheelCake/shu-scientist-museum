@@ -1718,3 +1718,500 @@
     background: var(--color-paper-raised);
   }
 }
+
+.museum-timeline,
+.spirit-explorer,
+.graph-page {
+  width: min(100% - (2 * var(--page-gutter)), var(--content-width));
+  margin-inline: auto;
+  padding-block: var(--space-8) var(--space-12);
+}
+
+.museum-timeline > h2,
+.spirit-explorer > h2 {
+  margin-bottom: var(--space-5);
+  font-size: var(--font-size-2xl);
+}
+
+.museum-timeline__track {
+  position: relative;
+}
+
+.museum-timeline__events {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.museum-timeline__events > li {
+  position: relative;
+  padding-block: var(--space-3);
+}
+
+.museum-timeline__events > li::before {
+  position: absolute;
+  z-index: 1;
+  top: var(--space-5);
+  left: calc(8rem - 0.25rem);
+  width: var(--space-1);
+  height: var(--space-1);
+  border: 0.125rem solid var(--color-paper);
+  border-radius: 50%;
+  content: "";
+  background: var(--color-brand);
+}
+
+.museum-timeline__event {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.museum-timeline__event time {
+  color: var(--color-brand);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.museum-timeline__event h3 {
+  margin-bottom: var(--space-1);
+  font-size: var(--font-size-xl);
+}
+
+.museum-timeline__event p {
+  max-width: 48rem;
+  color: var(--color-ink-muted);
+}
+
+.museum-timeline__people {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-bottom: 0;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.museum-timeline__people span {
+  color: var(--color-brand);
+  font-weight: 700;
+}
+
+.spirit-switcher {
+  display: grid;
+  border-block: 1px solid var(--color-archive);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.spirit-switcher button {
+  display: flex;
+  min-height: 4rem;
+  align-items: center;
+  padding: var(--space-2);
+  border: 0;
+  border-right: 1px solid var(--color-archive);
+  color: var(--color-ink);
+  background: transparent;
+  cursor: pointer;
+  gap: var(--space-2);
+  font-weight: 700;
+  text-align: left;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard);
+}
+
+.spirit-switcher button:nth-child(3n) {
+  border-right: 0;
+}
+
+.spirit-switcher button[aria-pressed="true"] {
+  color: var(--color-paper-raised);
+  background: var(--color-brand);
+}
+
+.spirit-switcher button span {
+  color: var(--color-bronze);
+  font-family: var(--font-display);
+}
+
+.spirit-switcher button[aria-pressed="true"] span {
+  color: var(--color-archive);
+}
+
+.spirit-profile {
+  display: grid;
+  margin-top: var(--space-6);
+  border: 1px solid var(--color-archive);
+  background: var(--color-paper-raised);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+.spirit-profile__definition,
+.spirit-profile__people,
+.spirit-profile__stories {
+  padding: var(--space-4);
+}
+
+.spirit-profile__definition {
+  grid-row: span 2;
+  color: var(--color-paper-raised);
+  background: var(--color-ink);
+}
+
+.spirit-profile__definition > p:first-child,
+.graph-node-details > p:first-child {
+  margin-bottom: var(--space-2);
+  color: var(--color-archive);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.spirit-profile__definition h2 {
+  font-size: var(--font-size-2xl);
+}
+
+.spirit-profile__definition > p:not(:first-child) {
+  color: color-mix(in srgb, var(--color-paper-raised) 72%, transparent);
+}
+
+.spirit-profile__definition ul,
+.spirit-profile__people ul,
+.spirit-profile__stories ul,
+.graph-relationships > ul,
+.graph-relationships > ul > li > ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.spirit-profile__definition ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.spirit-profile__definition li {
+  padding-inline: var(--space-1);
+  border: 1px solid rgb(213 197 166 / 32%);
+  color: var(--color-archive);
+  font-size: var(--font-size-xs);
+}
+
+.spirit-profile__people {
+  border-bottom: 1px solid var(--color-archive);
+}
+
+.spirit-profile__people li {
+  display: grid;
+  padding-block: var(--space-2);
+  border-bottom: 1px solid var(--color-line);
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--space-2);
+}
+
+.spirit-profile__people a {
+  color: var(--color-brand);
+  font-weight: 700;
+}
+
+.spirit-profile__people span,
+.spirit-profile__stories p,
+.spirit-profile__empty {
+  color: var(--color-ink-muted);
+}
+
+.spirit-profile__stories li + li {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-line);
+}
+
+.spirit-profile__stories h4 {
+  margin-bottom: var(--space-1);
+  font-size: var(--font-size-lg);
+}
+
+.spirit-profile__stories p:last-child,
+.spirit-profile__empty {
+  margin-bottom: 0;
+}
+
+.graph-page {
+  max-width: none;
+}
+
+.graph-view-switcher {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-3);
+  gap: var(--space-1);
+}
+
+.graph-view-switcher button {
+  min-height: 3rem;
+  padding-inline: var(--space-2);
+  border: 1px solid var(--color-brand);
+  color: var(--color-brand);
+  background: transparent;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.graph-view-switcher button[aria-pressed="true"] {
+  color: var(--color-paper-raised);
+  background: var(--color-brand);
+}
+
+.scientist-graph__layout {
+  display: grid;
+  align-items: stretch;
+  grid-template-columns: minmax(0, 2fr) minmax(18rem, 0.7fr);
+  gap: var(--space-3);
+}
+
+.scientist-graph__canvas {
+  min-width: 0;
+  border: 1px solid var(--color-archive);
+  background:
+    radial-gradient(
+      circle at center,
+      rgb(166 132 82 / 18%) 1px,
+      transparent 1px
+    ),
+    var(--color-paper-raised);
+  background-size:
+    1rem 1rem,
+    auto;
+}
+
+.scientist-graph__canvas svg {
+  width: 100%;
+  min-height: 32rem;
+}
+
+.scientist-graph__edges line {
+  stroke: var(--color-bronze);
+  stroke-opacity: 0.28;
+  stroke-width: 1.5;
+  transition:
+    stroke var(--duration-fast) var(--ease-standard),
+    stroke-opacity var(--duration-fast) var(--ease-standard),
+    stroke-width var(--duration-fast) var(--ease-standard);
+}
+
+.scientist-graph__edges line[data-active="true"] {
+  stroke: var(--color-accent);
+  stroke-opacity: 1;
+  stroke-width: 4;
+}
+
+.graph-node {
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.graph-node[data-dimmed="true"] {
+  opacity: 0.28;
+}
+
+.graph-node circle,
+.graph-node polygon {
+  stroke: var(--color-bronze);
+  stroke-width: 3;
+}
+
+.graph-node--scientist circle {
+  fill: var(--color-brand);
+}
+
+.graph-node--theme polygon {
+  fill: var(--color-archive);
+}
+
+.graph-node text {
+  fill: var(--color-paper-raised);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.graph-node--theme text {
+  fill: var(--color-ink);
+}
+
+.graph-node[data-selected="true"] circle,
+.graph-node[data-selected="true"] polygon,
+.graph-node[data-neighbor="true"] circle,
+.graph-node[data-neighbor="true"] polygon,
+.graph-node:focus-visible circle,
+.graph-node:focus-visible polygon {
+  stroke: var(--color-accent);
+  stroke-width: 6;
+}
+
+.scientist-graph__legend {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-2);
+  margin-bottom: 0;
+  color: var(--color-ink-muted);
+  gap: var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+.graph-node-details {
+  min-height: 20rem;
+  padding: var(--space-4);
+  border-top: 0.25rem solid var(--color-bronze);
+  background: var(--color-ink);
+  color: var(--color-paper-raised);
+}
+
+.graph-node-details h2 {
+  font-size: var(--font-size-2xl);
+}
+
+.graph-node-details > p:not(:first-child) {
+  color: color-mix(in srgb, var(--color-paper-raised) 70%, transparent);
+}
+
+.graph-node-details a {
+  color: var(--color-archive);
+  font-weight: 700;
+}
+
+.graph-relationships {
+  margin-top: var(--space-8);
+}
+
+.graph-relationships > h2 {
+  font-size: var(--font-size-2xl);
+}
+
+.graph-relationships > p {
+  max-width: var(--content-narrow);
+  color: var(--color-ink-muted);
+}
+
+.graph-relationships > ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.graph-relationships > ul > li {
+  display: grid;
+  padding: var(--space-3);
+  border-top: 0.25rem solid var(--color-brand);
+  background: var(--color-paper-raised);
+  gap: var(--space-1);
+}
+
+.graph-relationships > ul > li > a {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+}
+
+.graph-relationships > ul > li > span {
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+}
+
+.graph-relationships > ul > li > ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: var(--space-1);
+  gap: var(--space-1);
+}
+
+.graph-relationships > ul > li > ul li {
+  padding-inline: var(--space-1);
+  border: 1px solid var(--color-archive);
+  color: var(--color-brand);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+@media (width < 68rem) {
+  .scientist-graph__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .graph-node-details {
+    min-height: auto;
+  }
+
+  .graph-relationships > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 44.9375rem) {
+  .museum-timeline,
+  .spirit-explorer,
+  .graph-page {
+    padding-block: var(--space-6) var(--space-8);
+  }
+
+  .museum-timeline .timeline-line {
+    left: 0.25rem;
+  }
+
+  .museum-timeline__events > li {
+    padding-left: var(--space-3);
+  }
+
+  .museum-timeline__events > li::before {
+    left: 0;
+  }
+
+  .museum-timeline__event,
+  .spirit-profile,
+  .graph-relationships > ul {
+    grid-template-columns: 1fr;
+  }
+
+  .museum-timeline__event {
+    gap: var(--space-1);
+  }
+
+  .spirit-switcher {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .spirit-switcher button:nth-child(3n) {
+    border-right: 1px solid var(--color-archive);
+  }
+
+  .spirit-switcher button:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .spirit-profile__definition {
+    grid-row: auto;
+  }
+
+  .spirit-profile__people li {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .graph-view-switcher {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scientist-graph__canvas svg {
+    min-height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .museum-timeline .timeline-line__progress {
+    transform: scaleY(1) !important;
+  }
+}
