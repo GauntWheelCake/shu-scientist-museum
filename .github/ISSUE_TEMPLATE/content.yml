@@ -1,0 +1,36 @@
+name: 内容修订
+description: 报告人物、史实、来源、图片、活动或影音内容问题
+title: "[内容] "
+labels: [content]
+body:
+  - type: markdown
+    attributes:
+      value: 感谢帮助我们保持展馆内容准确、可追溯。
+  - type: input
+    id: page
+    attributes:
+      label: 页面地址
+      placeholder: https://gauntwheelcake.github.io/shu-scientist-museum/...
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题说明
+      description: 请指出具体文字、数字、图片或链接及其问题。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 建议修订与来源
+      description: 请提供可复核来源、文件名与页码或公开链接；不要上传敏感资料。
+    validations:
+      required: true
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: 资料确认
+      options:
+        - label: 我确认所提供资料可以用于本项目的内容复核。
+          required: true

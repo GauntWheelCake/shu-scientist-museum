@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type JSX } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { withBasePath } from '../../app/publicAsset';
 import { MobileNav } from './MobileNav';
 
 const primaryNavigationItems = [
@@ -67,7 +68,7 @@ export function Header(): JSX.Element {
     <header className="site-header">
       <div className="site-header__inner site-container">
         <Link className="site-brand" to="/" aria-label="上海大学科学家精神数字展馆首页">
-          <img className="site-brand__logo" src="/logo.svg" alt="上海大学" />
+          <img className="site-brand__logo" src={withBasePath('/logo.svg')} alt="上海大学" />
           <span className="site-brand__name">科学家精神数字展馆</span>
         </Link>
 

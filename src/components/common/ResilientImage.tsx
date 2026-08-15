@@ -1,4 +1,5 @@
 import { useState, type JSX } from 'react';
+import { withBasePath } from '../../app/publicAsset';
 
 type ResilientImageProps = {
   src: string;
@@ -37,7 +38,7 @@ function SourceImage({
   return (
     <img
       className={className}
-      src={src}
+      src={withBasePath(src)}
       alt={alt}
       loading={loading}
       onError={() => setFailed(true)}
