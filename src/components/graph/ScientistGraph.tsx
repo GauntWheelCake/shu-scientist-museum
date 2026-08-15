@@ -1,4 +1,4 @@
-import { useState, type JSX, type KeyboardEvent } from 'react';
+import { useEffect, useState, type JSX, type KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import type { Scientist, SpiritTheme } from '../../content/types';
 
@@ -9,6 +9,7 @@ type ScientistGraphProps = {
 
 type SelectedNode =
   { kind: 'scientist'; id: string } | { kind: 'theme'; id: string } | null;
+type GraphView = 'graph' | 'list';
 
 const mobileGraphQuery = '(max-width: 719px)';
 const graphWidth = 960;
@@ -16,12 +17,12 @@ const graphHeight = 640;
 const scientistX = 136;
 const themeX = 824;
 
-function initialView(): 'graph' | 'list' {
-  return typeof window !== 'undefined' &&
+function initiallyMatchesMobileViewport(): boolean {
+  return (
+    typeof window !== 'undefined' &&
     typeof window.matchMedia === 'function' &&
     window.matchMedia(mobileGraphQuery).matches
-    ? 'list'
-    : 'graph';
+  );
 }
 
 function verticalPosition(index: number, length: number): number {
@@ -36,8 +37,29 @@ export function ScientistGraph({
   scientists,
   themes,
 }: ScientistGraphProps): JSX.Element {
-  const [view, setView] = useState<'graph' | 'list'>(initialView);
+  const [matchesMobileViewport, setMatchesMobileViewport] = useState(
+    initiallyMatchesMobileViewport,
+  );
+  const [explicitView, setExplicitView] = useState<GraphView | null>(null);
   const [selectedNode, setSelectedNode] = useState<SelectedNode>(null);
+  const view: GraphView =
+    explicitView ?? (matchesMobileViewport ? 'list' : 'graph');
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia(mobileGraphQuery);
+    const updateViewport = (event: MediaQueryListEvent): void => {
+      setMatchesMobileViewport(event.matches);
+    };
+
+    setMatchesMobileViewport(mediaQuery.matches);
+    mediaQuery.addEventListener('change', updateViewport);
+
+    return () => mediaQuery.removeEventListener('change', updateViewport);
+  }, []);
   const themeById = new Map(themes.map((theme) => [theme.id, theme]));
   const themePositions = new Map(
     themes.map((theme, index) => [
@@ -86,7 +108,7 @@ export function ScientistGraph({
           type="button"
           aria-label="切换到图形视图"
           aria-pressed={view === 'graph'}
-          onClick={() => setView('graph')}
+          onClick={() => setExplicitView('graph')}
         >
           图形视图
         </button>
@@ -94,7 +116,7 @@ export function ScientistGraph({
           type="button"
           aria-label="切换到列表视图"
           aria-pressed={view === 'list'}
-          onClick={() => setView('list')}
+          onClick={() => setExplicitView('list')}
         >
           列表视图
         </button>
@@ -106,8 +128,9 @@ export function ScientistGraph({
             <svg
               data-testid="scientist-graph-svg"
               viewBox={`0 0 ${graphWidth} ${graphHeight}`}
-              role="img"
-              aria-labelledby="scientist-graph-title scientist-graph-description"
+              role="group"
+              aria-labelledby="scientist-graph-title"
+              aria-describedby="scientist-graph-description"
             >
               <title id="scientist-graph-title">科学家与精神主题关系图</title>
               <desc id="scientist-graph-description">
