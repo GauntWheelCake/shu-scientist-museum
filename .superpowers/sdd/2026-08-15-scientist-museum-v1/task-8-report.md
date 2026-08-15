@@ -44,12 +44,12 @@
 
 | 公开文件 | 原文件 | 定位 | 用途 | alt |
 | --- | --- | --- | --- | --- |
-| `/images/scientists/qian-weichang.webp` | `E:/2026社会实践写word+做网站/演讲ppt/钱伟长：从偏科少年到力学大师.pptx` | slide 2 | 钱伟长人物卡片与人物专题肖像 | 钱伟长肖像 |
-| `/images/scientists/li-sanli.webp` | `E:/2026社会实践写word+做网站/演讲ppt/李三立：造国产超级计算机.pptx` | slide 2 | 李三立人物卡片与人物专题肖像 | 李三立肖像 |
-| `/images/scientists/huang-hongjia.webp` | `E:/2026社会实践写word+做网站/演讲ppt/黄宏嘉：一根光纤连通万家 (1).pptx` | slide 3 | 黄宏嘉人物卡片与人物专题照片 | 黄宏嘉在实验室设备旁向学生讲解 |
-| `/images/archives/source-qian-courseware-2026.webp` | `E:/2026社会实践写word+做网站/演讲ppt/钱伟长：从偏科少年到力学大师.pptx` | slide 1 | 钱伟长主题宣讲课件档案封面 | 钱伟长主题宣讲课件封面 |
-| `/images/archives/source-li-courseware-2026.webp` | `E:/2026社会实践写word+做网站/演讲ppt/李三立：造国产超级计算机.pptx` | slide 1 | 李三立主题宣讲课件档案封面 | 李三立主题宣讲课件封面 |
-| `/images/archives/source-huang-courseware-2026.webp` | `E:/2026社会实践写word+做网站/演讲ppt/黄宏嘉：一根光纤连通万家 (1).pptx` | slide 1 | 黄宏嘉主题宣讲课件档案封面 | 黄宏嘉主题宣讲课件封面 |
+| `/images/scientists/qian-weichang.webp` | `演讲ppt/钱伟长：从偏科少年到力学大师.pptx` | slide 2 | 钱伟长人物卡片与人物专题肖像 | 钱伟长肖像 |
+| `/images/scientists/li-sanli.webp` | `演讲ppt/李三立：造国产超级计算机.pptx` | slide 2 | 李三立人物卡片与人物专题肖像 | 李三立肖像 |
+| `/images/scientists/huang-hongjia.webp` | `演讲ppt/黄宏嘉：一根光纤连通万家 (1).pptx` | slide 3 | 黄宏嘉人物卡片与人物专题照片 | 黄宏嘉在实验室设备旁向学生讲解 |
+| `/images/archives/source-qian-courseware-2026.webp` | `演讲ppt/钱伟长：从偏科少年到力学大师.pptx` | slide 1 | 钱伟长主题宣讲课件档案封面 | 钱伟长主题宣讲课件封面 |
+| `/images/archives/source-li-courseware-2026.webp` | `演讲ppt/李三立：造国产超级计算机.pptx` | slide 1 | 李三立主题宣讲课件档案封面 | 李三立主题宣讲课件封面 |
+| `/images/archives/source-huang-courseware-2026.webp` | `演讲ppt/黄宏嘉：一根光纤连通万家 (1).pptx` | slide 1 | 黄宏嘉主题宣讲课件档案封面 | 黄宏嘉主题宣讲课件封面 |
 
 候选资料全量核查记录：
 
@@ -151,4 +151,101 @@ vite v7.3.6 building client environment for production...
 ## Concerns
 
 - 当前 Codex 会话未暴露 `load_workspace_dependencies` 工具；资料渲染使用 brief 指定的同版本 bundled runtime 绝对路径。Presentation helper 在 Windows 中文 stdout 解码处有非致命报错，但五份 PPTX 均生成连续的完整 slide 序列；PDF wrapper 的 Poppler 路径失配，改用同一 runtime 内实际 `native/poppler/Library/bin` 后完成 82 页渲染。
-- `sourceFile` 记录的是当前资料库的绝对路径；若资料库迁移，需同步更新来源登记，但公开 WebP 与 slide locator 不受影响。
+- `sourceFile` 只记录相对于维护者本地资料库根的逻辑路径；资料库根不进入公开合同，维护者需在本地解析并保证对应原文件可访问。
+
+## Fix round 1/5：Important findings
+
+### 状态 / 提交
+
+- 状态：DONE
+- 修复提交：`fix: tighten museum asset provenance checks`（SHA 以任务最终回传为准）
+- 修复范围：仅来源覆盖与可迁移性、历史图交互态低饱和、三张聚焦来源证据。
+
+### 改动
+
+- `src/content/sources.test.ts`：递归读取 `public/images`，自动枚举磁盘上实际存在的全部 WebP；将真实发布集合与 `sources.assetPath` 精确相等比较并验证唯一性，同时对每条登记使用 `existsSync` 核验公开文件。计划活动和 collecting 媒体当前没有磁盘 WebP，因此不会误判为发布资产。
+- `src/content/sources.test.ts`：要求 `sourceFile` 符合 `演讲ppt/...` 或 `模板/...` 的资料库相对逻辑路径，禁止盘符、根路径、用户目录与 `..`。
+- `src/content/sources.ts`：六条来源由本机 `E:/...` 绝对路径改为 `演讲ppt/...` 稳定标识，保留 slide locator。
+- `docs/content-guide.md`：示例改为资料库相对路径，并明确资料库根只由维护者本地解析，不进入公开内容合同。
+- `src/styles/designSystem.test.ts`：新增回归测试，要求卡片 hover 与 focus-within 使用同一历史图规则，且 `grayscale` 不低于 `0.8`。
+- `src/styles/components.css`：历史人物卡片交互态由 `grayscale(0.28)` 改为 `grayscale(0.88)`，保留克制缩放和对比度变化。
+
+### TDD RED / GREEN
+
+RED：
+
+```text
+npm test -- src/content/sources.test.ts src/styles/designSystem.test.ts
+```
+
+实际输出（exit 1）：
+
+```text
+Test Files 2 failed (2)
+Tests 2 failed | 10 passed (12)
+expected sourceFile to match /^(演讲ppt|模板)\/.../
+expected 0.28 to be greater than or equal to 0.8
+```
+
+来源最小修复后单文件 GREEN：
+
+```text
+npm test -- src/content/sources.test.ts
+✓ src/content/sources.test.ts (5 tests)
+Test Files 1 passed (1)
+Tests 5 passed (5)
+```
+
+样式最小修复后单文件 GREEN：
+
+```text
+npm test -- src/styles/designSystem.test.ts
+✓ src/styles/designSystem.test.ts (7 tests)
+Test Files 1 passed (1)
+Tests 7 passed (7)
+```
+
+联合定向 GREEN（含未受影响的 site-meta）：
+
+```text
+npm test -- src/content/sources.test.ts src/styles/designSystem.test.ts src/app/site-meta.test.ts
+Test Files 3 passed (3)
+Tests 23 passed (23)
+```
+
+### 聚焦来源证据
+
+证据目录：`.superpowers/sdd/2026-08-15-scientist-museum-v1/task-8-evidence/`。该目录继承 `.superpowers/` 的 gitignore，只保留三张源 slide PNG，不提交；聚焦渲染 helper 已删除。
+
+- `qian-weichang-slide-2.png`：slide 标题为“同学们，我们来认识一位厉害的科学家！”，左侧明确写“故事主角——钱伟长”与“上海大学首任校长”，右侧红底人物肖像即最终 `qian-weichang.webp` 的裁切区域；姓名、身份和照片在同一 slide 核对。
+- `li-sanli-slide-2.png`：右侧标题明确写“谁是李三立爷爷？”，左侧黄色圆角框内的黑白证件式肖像即最终 `li-sanli.webp` 的裁切区域；姓名与肖像在同一 slide 核对。
+- `huang-hongjia-slide-3.png`：右侧文字明确点名“黄宏嘉爷爷”，左侧照片显示黄宏嘉在实验设备旁向学生讲解；最终 `huang-hongjia.webp` 裁取左侧完整照片区域，人物身份由同一 slide 的名称与场景说明核对。
+
+### 覆盖验证
+
+```text
+npm run lint
+npm run typecheck
+npm run build
+```
+
+最终实际输出（exit 0）：lint 零 warning，typecheck 通过，Vite `81 modules transformed`，`built in 1.31s`，无缺失资源 warning。
+
+```text
+npm run check
+```
+
+最终实际输出（exit 0）：
+
+```text
+Content validation passed.
+Test Files 21 passed (21)
+Tests 91 passed (91)
+✓ 81 modules transformed.
+✓ built in 1.29s
+```
+
+### Concerns
+
+- 聚焦证据为本地审阅材料且按要求不提交；若工作树被清理，需从三份来源课件的相同 slide 重新生成。
+- 资料库根不在代码中固定；维护者需在本地将 `演讲ppt/...` 逻辑路径解析到可信资料库并核对文件存在性。

@@ -120,14 +120,14 @@
   id: 'source-example-name-portrait',
   kind: 'historical-photo',
   assetPath: '/images/scientists/example-name.webp',
-  sourceFile: 'E:/资料目录/人物主题课件.pptx',
+  sourceFile: '演讲ppt/人物主题课件.pptx',
   locator: 'slide 7', // PDF 使用 'page 7'
   usage: '人物卡片与人物专题肖像',
   alt: '示例人物在实验室工作',
 }
 ```
 
-`sourceFile` 必须指向实际检查过的原文件，`locator` 必须是逐页核验后的幻灯片号或 PDF 页码，`usage` 和 `alt` 必须与最终公开文件一致。删除公开图片时同步删除来源登记；替换图片时保留历史审查记录并更新 locator。
+`sourceFile` 是相对于维护者本地“资料库根”的稳定逻辑路径，不写盘符、用户目录、绝对路径或 `..`；资料库根只在本地解析，不进入公开内容合同。它必须指向实际检查过的原文件，`locator` 必须是逐页核验后的幻灯片号或 PDF 页码，`usage` 和 `alt` 必须与最终公开文件一致。删除公开图片时同步删除来源登记；替换图片时保留历史审查记录并更新 locator。
 
 ## 验证命令
 

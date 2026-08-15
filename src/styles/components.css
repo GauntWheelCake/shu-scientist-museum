@@ -1143,7 +1143,7 @@
 
 .scientist-card:hover .scientist-card__image,
 .scientist-card:focus-within .scientist-card__image {
-  filter: grayscale(0.28) contrast(1.04);
+  filter: grayscale(0.88) contrast(1.04);
   transform: scale(1.03);
 }
 

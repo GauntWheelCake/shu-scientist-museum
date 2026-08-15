@@ -106,3 +106,14 @@ it('steps navigation and section spacing through fixed grid values', () => {
     'var(--space-12)',
   ]);
 });
+
+it('keeps historical scientist cards strongly desaturated on hover and keyboard focus', () => {
+  const components = readStylesheet('components.css');
+  const interactiveRule = components.match(
+    /(\.scientist-card:hover \.scientist-card__image,\s*\.scientist-card:focus-within \.scientist-card__image)\s*\{([^}]+)\}/,
+  );
+  const grayscale = interactiveRule?.[2].match(/filter:\s*grayscale\((\d+(?:\.\d+)?)\)/);
+
+  expect(interactiveRule?.[1]).toContain('.scientist-card:focus-within .scientist-card__image');
+  expect(Number(grayscale?.[1])).toBeGreaterThanOrEqual(0.8);
+});
