@@ -19,13 +19,25 @@ function installDesktopViewport(initiallyDesktop: boolean): {
 } {
   const mediaQuery = Object.assign(new EventTarget(), {
     matches: initiallyDesktop,
-    media: '(min-width: 68.0625rem)',
+    media: '(min-width: 68rem)',
     onchange: null,
     addListener: () => undefined,
     removeListener: () => undefined,
   }) as MediaQueryList;
 
-  window.matchMedia = () => mediaQuery;
+  window.matchMedia = (query) => {
+    if (query === mediaQuery.media) {
+      return mediaQuery;
+    }
+
+    return Object.assign(new EventTarget(), {
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => undefined,
+      removeListener: () => undefined,
+    }) as MediaQueryList;
+  };
 
   return {
     update(matches: boolean) {
@@ -104,7 +116,7 @@ it('closes an open mobile menu after navigation elsewhere in the app', async () 
   expect(menuButton).toHaveAttribute('aria-expanded', 'false');
 });
 
-it('closes the mobile menu and restores scrolling when the viewport becomes desktop-sized', async () => {
+it('closes the menu and restores scrolling when crossing from below to the exact desktop boundary', async () => {
   const user = userEvent.setup();
   const viewport = installDesktopViewport(false);
   document.body.style.overflow = 'auto';

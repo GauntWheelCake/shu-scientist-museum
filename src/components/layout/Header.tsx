@@ -12,7 +12,7 @@ const primaryNavigationItems = [
   { label: '影音档案', to: '/media' },
 ] as const;
 
-const desktopViewportQuery = '(min-width: 68.0625rem)';
+const desktopViewportQuery = '(min-width: 68rem)';
 
 export function Header(): JSX.Element {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

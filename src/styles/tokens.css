@@ -39,7 +39,7 @@
 
   --content-width: 75rem;
   --content-narrow: 48rem;
-  --page-gutter: clamp(1rem, 4vw, 3rem);
+  --page-gutter: 1rem;
   --header-height: 5rem;
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
@@ -49,4 +49,16 @@
   --duration-base: 280ms;
   --duration-slow: 520ms;
   --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (min-width: 42rem) {
+  :root {
+    --page-gutter: 1.5rem;
+  }
+}
+
+@media (min-width: 68rem) {
+  :root {
+    --page-gutter: 2rem;
+  }
 }

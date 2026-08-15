@@ -21,9 +21,21 @@
 }
 
 .section-space {
-  padding-block: clamp(var(--space-6), 8vw, var(--space-12));
+  padding-block: var(--space-6);
 }
 
 .text-muted {
   color: var(--color-ink-muted);
+}
+
+@media (min-width: 42rem) {
+  .section-space {
+    padding-block: var(--space-8);
+  }
+}
+
+@media (min-width: 68rem) {
+  .section-space {
+    padding-block: var(--space-12);
+  }
 }
