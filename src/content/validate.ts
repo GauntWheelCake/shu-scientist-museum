@@ -10,6 +10,14 @@ const CORE_SCIENTISTS = [
   'scientist-huang-hongjia',
 ] as const;
 
+const ACTIVITY_TYPES = new Set([
+  'branch',
+  'school',
+  'community',
+  'military',
+]);
+const SOURCE_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
 const issue = (
   code: ValidationIssueCode,
   path: string,
@@ -175,6 +183,15 @@ export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
         ),
       );
     }
+    if (item.status === 'published' && !item.platform?.trim()) {
+      issues.push(
+        issue(
+          'PUBLISHED_MEDIA_WITHOUT_PLATFORM',
+          `media[${index}].platform`,
+          '已发布影音必须提供平台名称。',
+        ),
+      );
+    }
   });
 
   dataset.activities.forEach((activity, index) => {
@@ -184,6 +201,54 @@ export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
           'NEGATIVE_PARTICIPANT_COUNT',
           `activities[${index}].participantCount`,
           '活动人数不能为负数。',
+        ),
+      );
+    }
+    if (!ACTIVITY_TYPES.has(activity.type)) {
+      issues.push(
+        issue(
+          'INVALID_ACTIVITY_TYPE',
+          `activities[${index}].type`,
+          `活动类型 “${activity.type}” 不在四类筛选值中。`,
+        ),
+      );
+    }
+    if (!activity.image.src.trim()) {
+      issues.push(
+        issue(
+          'MISSING_IMAGE_SRC',
+          `activities[${index}].image.src`,
+          '活动图片必须提供资源路径。',
+        ),
+      );
+    }
+    if (!activity.image.alt.trim()) {
+      issues.push(
+        issue(
+          'MISSING_ALT_TEXT',
+          `activities[${index}].image.alt`,
+          '活动图片必须提供替代文本。',
+        ),
+      );
+    }
+    if (!SOURCE_ID_PATTERN.test(activity.image.sourceId)) {
+      issues.push(
+        issue(
+          'INVALID_SOURCE_ID',
+          `activities[${index}].image.sourceId`,
+          '活动图片必须提供小写连字符格式的来源 ID。',
+        ),
+      );
+    }
+  });
+
+  dataset.archives.forEach((archive, index) => {
+    if (!SOURCE_ID_PATTERN.test(archive.sourceId)) {
+      issues.push(
+        issue(
+          'INVALID_SOURCE_ID',
+          `archives[${index}].sourceId`,
+          '档案必须提供小写连字符格式的来源 ID。',
         ),
       );
     }

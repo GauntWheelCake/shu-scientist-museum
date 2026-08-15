@@ -19,18 +19,18 @@ export const scientists: Scientist[] = [
     featured: true,
     chapters: [
       {
-        id: 'chapter-qian-switch-to-physics',
-        title: '从文史转向物理',
+        id: 'chapter-qian-aerospace-research',
+        title: '航空太空领域研究',
         problem:
-          '“九一八”事变后，他认识到国家积弱与科技能力不足密切相关，而自己的理科基础十分薄弱。',
+          '航空太空领域需要以力学研究飞行与结构中的复杂问题。',
         action:
-          '他坚持申请转入清华大学物理系，并以高强度学习补足普通物理、微积分和普通化学。',
+          '他留学美国加州理工大学，在冯·卡门教授指导下从事航空太空领域研究。',
         significance:
-          '这次选择确立了以科学报国的人生方向，也为后续力学研究打下基础。',
+          '这段经历成为他应用数学与力学科研生涯的重要阶段。',
       },
       {
         id: 'chapter-qian-shell-mechanics',
-        title: '板壳理论的力学突破',
+        title: '板壳内禀统一理论',
         problem:
           '航空与工程结构研究需要更统一地描述板壳受力和变形。',
         action:
@@ -39,14 +39,14 @@ export const scientists: Scientist[] = [
           '这项工作成为其应用数学与力学研究的重要代表成果。',
       },
       {
-        id: 'chapter-qian-return-and-education',
-        title: '归国建设与教育改革',
+        id: 'chapter-qian-solid-fluid-mechanics',
+        title: '从固体到流体的应用力学探索',
         problem:
-          '抗战胜利后的祖国急需科研人才，高校也需要培养兼具专业能力与综合素养的学生。',
+          '应用数学与力学面对的工程对象跨越固体与流体，需要持续拓展研究视野。',
         action:
-          '他于1946年回国任教，后来在上海大学推动学分制、选课制、短学期制和导师制等教学管理改革。',
+          '他长期从事应用数学与力学研究，研究跨度从固体延伸到流体。',
         significance:
-          '他把科研报国与育人实践贯通，为上海大学的综合性办学格局留下深远影响。',
+          '他成为我国近代应用数学与力学的奠基人之一。',
       },
     ],
   },
@@ -96,7 +96,7 @@ export const scientists: Scientist[] = [
         action:
           '他带领团队研制自强2000和自强3000，并建设上海高校网格平台。',
         significance:
-          '自强3000峰值速度达每秒2.35万亿次，2004年列全球超级计算机TOP500第126位。',
+          '自强3000于2004年列全球超级计算机TOP500第126位，展现了自主高性能计算平台的建设成果。',
       },
     ],
   },
