@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, useLocation } from 'react-router-dom';
+import { MemoryRouter, useLocation, useNavigate } from 'react-router-dom';
 import { Gallery } from './Gallery';
 
 function LocationProbe() {
@@ -9,11 +9,22 @@ function LocationProbe() {
   return <output aria-label="当前查询参数">{location.search}</output>;
 }
 
+function HistoryControls() {
+  const navigate = useNavigate();
+
+  return (
+    <button type="button" onClick={() => navigate(-1)}>
+      返回上一组筛选
+    </button>
+  );
+}
+
 function renderGallery(entry = '/scientists') {
   return render(
     <MemoryRouter initialEntries={[entry]}>
       <Gallery />
       <LocationProbe />
+      <HistoryControls />
     </MemoryRouter>,
   );
 }
@@ -47,6 +58,34 @@ describe('Gallery', () => {
 
     expect(screen.getByLabelText('当前查询参数')).toHaveTextContent('');
     expect(screen.getAllByRole('article')).toHaveLength(8);
+  });
+
+  it('pushes each user filter choice so Back restores the previous filter group', async () => {
+    const user = userEvent.setup();
+    renderGallery();
+
+    await user.selectOptions(screen.getByLabelText('学科领域'), '应用数学');
+    await user.selectOptions(screen.getByLabelText('精神关键词'), 'spirit-truth-seeking');
+    await user.click(screen.getByRole('button', { name: '返回上一组筛选' }));
+
+    expect(screen.getByLabelText('学科领域')).toHaveValue('应用数学');
+    expect(screen.getByLabelText('精神关键词')).toHaveValue('');
+    expect(screen.getByLabelText('当前查询参数')).toHaveTextContent(
+      '?field=%E5%BA%94%E7%94%A8%E6%95%B0%E5%AD%A6',
+    );
+  });
+
+  it('pushes reset so Back restores the filters the user cleared', async () => {
+    const user = userEvent.setup();
+    renderGallery();
+
+    await user.selectOptions(screen.getByLabelText('学科领域'), '应用数学');
+    await user.selectOptions(screen.getByLabelText('精神关键词'), 'spirit-innovation');
+    await user.click(screen.getByRole('button', { name: '重置筛选' }));
+    await user.click(screen.getByRole('button', { name: '返回上一组筛选' }));
+
+    expect(screen.getByLabelText('学科领域')).toHaveValue('应用数学');
+    expect(screen.getByLabelText('精神关键词')).toHaveValue('spirit-innovation');
   });
 
   it('keeps identity visible, hides unknown years, and replaces failed portraits without a broken image', () => {

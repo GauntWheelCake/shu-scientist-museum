@@ -8,7 +8,11 @@ type ResilientImageProps = {
   loading?: 'eager' | 'lazy';
 };
 
-export function ResilientImage({
+export function ResilientImage(props: ResilientImageProps): JSX.Element {
+  return <SourceImage key={props.src} {...props} />;
+}
+
+function SourceImage({
   src,
   alt,
   fallbackLabel,

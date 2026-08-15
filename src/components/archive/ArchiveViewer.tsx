@@ -44,6 +44,7 @@ export function ArchiveViewer({ items, initialId, onClose }: ArchiveViewerProps)
   }
 
   const close = () => {
+    dialogRef.current?.close?.();
     returnFocusRef.current?.focus();
     onClose();
   };

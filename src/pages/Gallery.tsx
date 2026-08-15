@@ -36,10 +36,10 @@ export function Gallery(): JSX.Element {
       next.delete(key);
     }
 
-    setSearchParams(next, { replace: true });
+    setSearchParams(next);
   };
 
-  const resetFilters = () => setSearchParams({}, { replace: true });
+  const resetFilters = () => setSearchParams({});
 
   return (
     <>
