@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { Footprints } from './Footprints';
 
 describe('Footprints', () => {
-  it('offers all four validated practice-route filters and shows the selected route', async () => {
+  it('filters every validated practice route to its own activity', async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -18,11 +18,27 @@ describe('Footprints', () => {
     expect(screen.getByRole('button', { name: '进社区' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '进军营' })).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: '进社区' }));
+    const routeCases = [
+      { label: '进支部', title: '科学家精神进支部（计划）' },
+      { label: '进校园', title: '科学家精神进校园（计划）' },
+      { label: '进社区', title: '科学家精神进社区（计划）' },
+      { label: '进军营', title: '科学家精神进军营（计划）' },
+    ];
 
-    expect(screen.getByRole('button', { name: '进社区' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('heading', { name: /进社区/ })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: /进军营/ })).not.toBeInTheDocument();
+    for (const routeCase of routeCases) {
+      await user.click(screen.getByRole('button', { name: routeCase.label }));
+
+      expect(screen.getByRole('button', { name: routeCase.label })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.getByRole('heading', { name: routeCase.title })).toBeInTheDocument();
+      expect(screen.getAllByRole('article')).toHaveLength(1);
+
+      for (const otherRoute of routeCases.filter((item) => item.label !== routeCase.label)) {
+        expect(screen.queryByRole('heading', { name: otherRoute.title })).not.toBeInTheDocument();
+      }
+    }
   });
 
   it('only totals completed participants and keeps planned routes out of results', () => {
