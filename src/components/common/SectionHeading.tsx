@@ -1,6 +1,7 @@
 import { type JSX } from 'react';
 
 type SectionHeadingProps = {
+  id?: string;
   eyebrow?: string;
   title: string;
   description?: string;
@@ -8,6 +9,7 @@ type SectionHeadingProps = {
 };
 
 export function SectionHeading({
+  id,
   eyebrow,
   title,
   description,
@@ -16,7 +18,7 @@ export function SectionHeading({
   return (
     <header className={`section-heading section-heading--${align}`}>
       {eyebrow ? <p className="section-heading__eyebrow">{eyebrow}</p> : null}
-      <h2 className="section-heading__title">{title}</h2>
+      <h2 id={id} className="section-heading__title">{title}</h2>
       {description ? <p className="section-heading__description">{description}</p> : null}
     </header>
   );

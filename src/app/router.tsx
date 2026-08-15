@@ -1,5 +1,6 @@
 import { type JSX } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import { Home } from '../pages/Home';
 import { App } from './App';
 
 function page(title: string): JSX.Element {
@@ -12,7 +13,7 @@ export const appRouter = createBrowserRouter(
       path: '/',
       element: <App />,
       children: [
-        { index: true, element: page('上海大学科学家精神数字展馆') },
+        { index: true, element: <Home /> },
         { path: 'scientists', element: page('科学家') },
         { path: 'scientists/:slug', element: page('科学家详情') },
         { path: 'timeline', element: page('时间轴') },
