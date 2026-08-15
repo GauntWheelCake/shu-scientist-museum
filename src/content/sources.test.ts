@@ -1,7 +1,12 @@
 // @ts-expect-error -- Node types are intentionally not global in the browser application.
-import { existsSync, readdirSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+// @ts-expect-error -- Node types are intentionally not global in the browser application.
+import { tmpdir } from 'node:os';
+// @ts-expect-error -- Node types are intentionally not global in the browser application.
+import { dirname, join } from 'node:path';
+import { afterEach, describe, expect, it } from 'vitest';
 import { archives } from './archives';
+import { validateSourceLibrary } from './source-library';
 import { sources } from './sources';
 
 type DirectoryEntry = {
@@ -9,6 +14,27 @@ type DirectoryEntry = {
   isDirectory: () => boolean;
   isFile: () => boolean;
 };
+
+const temporaryRoots: string[] = [];
+
+afterEach(() => {
+  for (const root of temporaryRoots.splice(0)) {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+function createSourceLibrary(files: string[]): string {
+  const root = mkdtempSync(join(tmpdir(), 'museum-source-library-'));
+  temporaryRoots.push(root);
+
+  for (const file of files) {
+    const target = join(root, ...file.split('/'));
+    mkdirSync(dirname(target), { recursive: true });
+    writeFileSync(target, 'fixture');
+  }
+
+  return root;
+}
 
 describe('museum asset sources', () => {
   function publishedWebpPaths(directory = 'public/images'): string[] {
@@ -78,5 +104,42 @@ describe('museum asset sources', () => {
 
     expect(historicalSources.length).toBeGreaterThan(0);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe('source library validation', () => {
+  it('accepts a source library when every registered file exists', () => {
+    const sourceFile = '演讲ppt/人物主题课件.pptx';
+    const root = createSourceLibrary([sourceFile]);
+
+    expect(validateSourceLibrary(root, [{ id: 'source-fixture', sourceFile }])).toEqual([]);
+  });
+
+  it('reports a registered source file that is missing from the supplied library root', () => {
+    const root = createSourceLibrary([]);
+    const sourceFile = '演讲ppt/缺失课件.pptx';
+
+    expect(validateSourceLibrary(root, [{ id: 'source-missing', sourceFile }])).toEqual([
+      {
+        code: 'SOURCE_FILE_MISSING',
+        sourceId: 'source-missing',
+        sourceFile,
+        message: '来源资料不存在：演讲ppt/缺失课件.pptx',
+      },
+    ]);
+  });
+
+  it('rejects a source path that escapes the supplied library root', () => {
+    const root = createSourceLibrary([]);
+    const sourceFile = '../外部课件.pptx';
+
+    expect(validateSourceLibrary(root, [{ id: 'source-escape', sourceFile }])).toEqual([
+      {
+        code: 'SOURCE_PATH_ESCAPE',
+        sourceId: 'source-escape',
+        sourceFile,
+        message: '来源路径越出资料库根目录：../外部课件.pptx',
+      },
+    ]);
   });
 });

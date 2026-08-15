@@ -249,3 +249,115 @@ Tests 91 passed (91)
 
 - 聚焦证据为本地审阅材料且按要求不提交；若工作树被清理，需从三份来源课件的相同 slide 重新生成。
 - 资料库根不在代码中固定；维护者需在本地将 `演讲ppt/...` 逻辑路径解析到可信资料库并核对文件存在性。
+
+## Fix round 2/5：真实来源资料库文件校验
+
+### 状态 / 提交
+
+- 状态：DONE
+- 修复提交：`fix: validate source library files against an explicit root`（SHA 以任务最终回传为准）
+- 范围：只处理稳定相对 `sourceFile` 的真实文件存在性与路径逃逸校验。
+
+### 实现
+
+- `src/content/source-library.ts`：新增可测试的 `validateSourceLibrary(root, records)`。调用者显式提供资料库根；每条 `sourceFile` 按路径段解析到 root 内，并通过 `relative`/`isAbsolute` 拒绝绝对路径与越界路径，再以 `statSync(...).isFile()` 检查真实文件。不可读路径也按缺失报告。
+- `src/content/sources.test.ts`：使用系统临时目录动态创建 fixture，不复制生产 `sources` 列表；覆盖全部存在、缺失任一来源、`..` 越界三种行为，并在每个测试后清理临时目录。
+- `scripts/validate-source-library.ts`：新增维护者 CLI，从显式 `--root` 参数读取本地资料库根，调用同一个校验器并逐项打印 issue。
+- `package.json`：新增独立命令 `validate:sources`，未加入 `npm run check`，因此普通协作者与 CI 不依赖外部资料库。
+- `docs/content-guide.md`：补充 `npm run validate:sources -- --root "D:/path/to/source-library"` 与边界说明。
+- 未新增依赖，代码中没有写入 `E:`、用户名或固定资料库根。
+
+### TDD RED / GREEN
+
+第一循环先定义全部存在的期望接口：
+
+```text
+npm test -- src/content/sources.test.ts
+```
+
+RED 实际输出（exit 1）：
+
+```text
+Error: Failed to resolve import "./source-library"
+Test Files 1 failed (1)
+```
+
+新增最小 API（返回空 issue）后的第一循环 GREEN：
+
+```text
+✓ src/content/sources.test.ts (6 tests)
+Test Files 1 passed (1)
+Tests 6 passed (6)
+```
+
+第二循环加入缺失与逃逸行为，确认 stub 不能发现问题：
+
+```text
+npm test -- src/content/sources.test.ts
+```
+
+语义 RED 实际输出（exit 1）：
+
+```text
+src/content/sources.test.ts (8 tests | 2 failed)
+expected [] to deeply equal SOURCE_FILE_MISSING issue
+expected [] to deeply equal SOURCE_PATH_ESCAPE issue
+Test Files 1 failed (1)
+Tests 2 failed | 6 passed (8)
+```
+
+实现 root 内安全解析与文件检查后的 GREEN：
+
+```text
+✓ src/content/sources.test.ts (8 tests)
+Test Files 1 passed (1)
+Tests 8 passed (8)
+```
+
+### 真实资料库验证
+
+命令使用 bundled Node v24.19.0 执行，资料库根仅作为本地运行参数出现：
+
+```text
+npm run validate:sources -- --root "E:\2026社会实践写word+做网站"
+```
+
+实际输出（exit 0）：
+
+```text
+Source library validation passed: 6/6 records, 3 unique files.
+```
+
+六条登记复用三份实际 PPTX，因此 records 为 6、unique files 为 3。
+
+### 覆盖检查
+
+```text
+npm test -- src/content/sources.test.ts
+npm run lint
+npm run typecheck
+npm run build
+```
+
+最终实际输出（exit 0）：来源测试 8/8、lint 零 warning、typecheck 通过；Vite `81 modules transformed`，`built in 1.35s`。
+
+```text
+npm run check
+```
+
+最终实际输出（exit 0）：
+
+```text
+Content validation passed.
+Test Files 21 passed (21)
+Tests 94 passed (94)
+✓ 81 modules transformed.
+✓ built in 1.25s
+```
+
+构建无缺失资源 warning。
+
+### Concerns
+
+- 真实资料库校验是维护者显式运行的独立门禁；普通 `npm run check` 只用临时 fixture 验证校验逻辑，不证明某台机器上的外部资料库仍挂载。
+- 当前三份来源 PPTX 被六条资产记录复用；缺少其中一份时会针对引用它的每条来源记录分别报告 issue，便于定位受影响公开资产。

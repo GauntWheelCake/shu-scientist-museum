@@ -139,6 +139,14 @@ npm test -- src/content/sources.test.ts src/app/site-meta.test.ts
 npm run check
 ```
 
+维护者另行校验本地来源资料库时，显式传入资料库根：
+
+```bash
+npm run validate:sources -- --root "D:/path/to/source-library"
+```
+
+该命令会把每条相对 `sourceFile` 安全解析到给定根目录内，拒绝路径逃逸并检查原文件真实存在。它不会加入 `npm run check`，避免 CI 或没有本地资料库的协作者依赖外部磁盘。
+
 构建日志不得出现缺失资源 warning。浏览人物、档案、活动和媒体页面，确认 PC 与移动端展示同一组完整内容，并在启用 `prefers-reduced-motion` 时确认信息不依赖动画才能出现。
 
 ## Pull Request 校对清单
