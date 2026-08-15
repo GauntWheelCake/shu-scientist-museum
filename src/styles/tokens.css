@@ -2,12 +2,12 @@
   color-scheme: light;
 
   --color-brand: #8f1d22;
-  --color-brand-deep: #681418;
+  --color-brand-deep: color-mix(in srgb, var(--color-brand) 72%, var(--color-ink));
   --color-accent: #c52a2f;
   --color-paper: #f3efe7;
-  --color-paper-raised: #fbf8f1;
+  --color-paper-raised: color-mix(in srgb, var(--color-paper) 92%, var(--color-archive));
   --color-ink: #171717;
-  --color-ink-muted: #5c5650;
+  --color-ink-muted: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
   --color-archive: #d5c5a6;
   --color-bronze: #a68452;
   --color-line: rgb(23 23 23 / 14%);

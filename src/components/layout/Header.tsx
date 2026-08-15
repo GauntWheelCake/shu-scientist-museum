@@ -12,6 +12,8 @@ const primaryNavigationItems = [
   { label: '影音档案', to: '/media' },
 ] as const;
 
+const desktopViewportQuery = '(min-width: 68.0625rem)';
+
 export function Header(): JSX.Element {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -20,6 +22,23 @@ export function Header(): JSX.Element {
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') {
+      return undefined;
+    }
+
+    const desktopViewport = window.matchMedia(desktopViewportQuery);
+    const closeMenuOnDesktop = (event: MediaQueryListEvent): void => {
+      if (event.matches) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    desktopViewport.addEventListener('change', closeMenuOnDesktop);
+
+    return () => desktopViewport.removeEventListener('change', closeMenuOnDesktop);
+  }, []);
 
   useEffect(() => {
     if (!isMenuOpen) {

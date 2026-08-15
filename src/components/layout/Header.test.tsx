@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Link, MemoryRouter } from 'react-router-dom';
+import { beforeEach } from 'vitest';
 import { Header } from './Header';
 
 const primaryNavigationItems = [
@@ -12,6 +13,33 @@ const primaryNavigationItems = [
   '精神足迹',
   '影音档案',
 ];
+
+function installDesktopViewport(initiallyDesktop: boolean): {
+  update: (matches: boolean) => void;
+} {
+  const mediaQuery = Object.assign(new EventTarget(), {
+    matches: initiallyDesktop,
+    media: '(min-width: 68.0625rem)',
+    onchange: null,
+    addListener: () => undefined,
+    removeListener: () => undefined,
+  }) as MediaQueryList;
+
+  window.matchMedia = () => mediaQuery;
+
+  return {
+    update(matches: boolean) {
+      Object.defineProperty(mediaQuery, 'matches', { configurable: true, value: matches });
+      const event = Object.assign(new Event('change'), { matches, media: mediaQuery.media });
+      mediaQuery.dispatchEvent(event);
+    },
+  };
+}
+
+beforeEach(() => {
+  installDesktopViewport(false);
+  document.body.style.overflow = '';
+});
 
 function renderHeader(): void {
   render(
@@ -44,6 +72,7 @@ it('reports the mobile menu state and closes it when Escape is pressed', async (
 
   await user.keyboard('{Escape}');
   expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+  expect(menuButton).toHaveFocus();
   expect(screen.queryByRole('navigation', { name: '移动端导航' })).not.toBeInTheDocument();
 });
 
@@ -73,4 +102,21 @@ it('closes an open mobile menu after navigation elsewhere in the app', async () 
   await user.click(screen.getByRole('link', { name: '测试页面切换' }));
 
   expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+});
+
+it('closes the mobile menu and restores scrolling when the viewport becomes desktop-sized', async () => {
+  const user = userEvent.setup();
+  const viewport = installDesktopViewport(false);
+  document.body.style.overflow = 'auto';
+  renderHeader();
+
+  const menuButton = screen.getByRole('button', { name: '打开导航菜单' });
+  await user.click(menuButton);
+  expect(document.body.style.overflow).toBe('hidden');
+
+  act(() => viewport.update(true));
+
+  expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+  expect(screen.queryByRole('navigation', { name: '移动端导航' })).not.toBeInTheDocument();
+  expect(document.body.style.overflow).toBe('auto');
 });
