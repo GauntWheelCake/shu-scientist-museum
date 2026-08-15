@@ -1,0 +1,301 @@
+import type {
+  ContentDataset,
+  ValidationIssue,
+  ValidationIssueCode,
+} from './types';
+
+const CORE_SCIENTISTS = [
+  'scientist-qian-weichang',
+  'scientist-li-sanli',
+  'scientist-huang-hongjia',
+] as const;
+
+const ACTIVITY_TYPES = new Set([
+  'branch',
+  'school',
+  'community',
+  'military',
+]);
+const SOURCE_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+const issue = (
+  code: ValidationIssueCode,
+  path: string,
+  message: string,
+): ValidationIssue => ({ code, path, message });
+
+export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
+  const issues: ValidationIssue[] = [];
+  const idPaths = new Map<string, string>();
+  const slugPaths = new Map<string, string>();
+  const collections = [
+    ['scientists', dataset.scientists],
+    ['stories', dataset.stories],
+    ['events', dataset.events],
+    ['archives', dataset.archives],
+    ['activities', dataset.activities],
+    ['media', dataset.media],
+    ['spiritThemes', dataset.spiritThemes],
+  ] as const;
+
+  for (const [collectionName, records] of collections) {
+    records.forEach((record, index) => {
+      const path = `${collectionName}[${index}].id`;
+      const firstPath = idPaths.get(record.id);
+      if (firstPath) {
+        issues.push(
+          issue(
+            'DUPLICATE_ID',
+            path,
+            `ID “${record.id}” 已在 ${firstPath} 使用。`,
+          ),
+        );
+      } else {
+        idPaths.set(record.id, path);
+      }
+    });
+  }
+
+  dataset.scientists.forEach((scientist, scientistIndex) => {
+    scientist.chapters.forEach((chapter, chapterIndex) => {
+      const path = `scientists[${scientistIndex}].chapters[${chapterIndex}].id`;
+      const firstPath = idPaths.get(chapter.id);
+      if (firstPath) {
+        issues.push(
+          issue(
+            'DUPLICATE_ID',
+            path,
+            `ID “${chapter.id}” 已在 ${firstPath} 使用。`,
+          ),
+        );
+      } else {
+        idPaths.set(chapter.id, path);
+      }
+    });
+  });
+
+  const slugRecords = [
+    ...dataset.scientists.map(({ slug }, index) => ({
+      slug,
+      path: `scientists[${index}].slug`,
+    })),
+    ...dataset.stories.map(({ slug }, index) => ({
+      slug,
+      path: `stories[${index}].slug`,
+    })),
+  ];
+  slugRecords.forEach(({ slug, path }) => {
+    const firstPath = slugPaths.get(slug);
+    if (firstPath) {
+      issues.push(
+        issue(
+          'DUPLICATE_SLUG',
+          path,
+          `Slug “${slug}” 已在 ${firstPath} 使用。`,
+        ),
+      );
+    } else {
+      slugPaths.set(slug, path);
+    }
+  });
+
+  const featuredScientistIds = new Set(
+    dataset.scientists
+      .filter(({ featured }) => featured)
+      .map(({ id }) => id),
+  );
+  CORE_SCIENTISTS.forEach((scientistId) => {
+    if (!featuredScientistIds.has(scientistId)) {
+      issues.push(
+        issue(
+          'MISSING_FEATURED_SCIENTIST',
+          'scientists',
+          `缺少核心人物 ${scientistId}，或该人物未标记为 featured。`,
+        ),
+      );
+    }
+  });
+
+  const scientistIds = new Set(dataset.scientists.map(({ id }) => id));
+  const spiritIds = new Set(dataset.spiritThemes.map(({ id }) => id));
+  const referenceRecords = [
+    ...dataset.scientists.map((record, index) => ({
+      path: `scientists[${index}]`,
+      record,
+    })),
+    ...dataset.stories.map((record, index) => ({
+      path: `stories[${index}]`,
+      record,
+    })),
+    ...dataset.events.map((record, index) => ({
+      path: `events[${index}]`,
+      record,
+    })),
+    ...dataset.archives.map((record, index) => ({
+      path: `archives[${index}]`,
+      record,
+    })),
+    ...dataset.activities.map((record, index) => ({
+      path: `activities[${index}]`,
+      record,
+    })),
+    ...dataset.media.map((record, index) => ({
+      path: `media[${index}]`,
+      record,
+    })),
+  ];
+
+  referenceRecords.forEach(({ path, record }) => {
+    if ('scientistIds' in record) {
+      record.scientistIds.forEach((scientistId, referenceIndex) => {
+        if (!scientistIds.has(scientistId)) {
+          issues.push(
+            issue(
+              'BROKEN_REFERENCE',
+              `${path}.scientistIds[${referenceIndex}]`,
+              `关联人物 ${scientistId} 不存在。`,
+            ),
+          );
+        }
+      });
+    }
+
+    record.spiritIds.forEach((spiritId, referenceIndex) => {
+      if (!spiritIds.has(spiritId)) {
+        issues.push(
+          issue(
+            'BROKEN_REFERENCE',
+            `${path}.spiritIds[${referenceIndex}]`,
+            `关联精神主题 ${spiritId} 不存在。`,
+          ),
+        );
+      }
+    });
+  });
+
+  dataset.media.forEach((item, index) => {
+    if (!item.description?.trim()) {
+      issues.push(
+        issue(
+          'MISSING_MEDIA_DESCRIPTION',
+          `media[${index}].description`,
+          '影音条目必须提供简介。',
+        ),
+      );
+    }
+    if (item.status === 'published' && !item.url?.trim()) {
+      issues.push(
+        issue(
+          'PUBLISHED_MEDIA_WITHOUT_URL',
+          `media[${index}].url`,
+          '已发布影音必须提供可访问 URL。',
+        ),
+      );
+    }
+    if (item.status === 'published' && !item.platform?.trim()) {
+      issues.push(
+        issue(
+          'PUBLISHED_MEDIA_WITHOUT_PLATFORM',
+          `media[${index}].platform`,
+          '已发布影音必须提供平台名称。',
+        ),
+      );
+    }
+  });
+
+  dataset.activities.forEach((activity, index) => {
+    if (activity.participantCount < 0) {
+      issues.push(
+        issue(
+          'NEGATIVE_PARTICIPANT_COUNT',
+          `activities[${index}].participantCount`,
+          '活动人数不能为负数。',
+        ),
+      );
+    }
+    if (!ACTIVITY_TYPES.has(activity.type)) {
+      issues.push(
+        issue(
+          'INVALID_ACTIVITY_TYPE',
+          `activities[${index}].type`,
+          `活动类型 “${activity.type}” 不在四类筛选值中。`,
+        ),
+      );
+    }
+    if (!activity.image) {
+      issues.push(
+        issue(
+          'MISSING_ACTIVITY_IMAGE',
+          `activities[${index}].image`,
+          '活动必须提供图片对象。',
+        ),
+      );
+      return;
+    }
+    if (!activity.image.src.trim()) {
+      issues.push(
+        issue(
+          'MISSING_IMAGE_SRC',
+          `activities[${index}].image.src`,
+          '活动图片必须提供资源路径。',
+        ),
+      );
+    }
+    if (!activity.image.alt.trim()) {
+      issues.push(
+        issue(
+          'MISSING_ALT_TEXT',
+          `activities[${index}].image.alt`,
+          '活动图片必须提供替代文本。',
+        ),
+      );
+    }
+    if (!SOURCE_ID_PATTERN.test(activity.image.sourceId)) {
+      issues.push(
+        issue(
+          'INVALID_SOURCE_ID',
+          `activities[${index}].image.sourceId`,
+          '活动图片必须提供小写连字符格式的来源 ID。',
+        ),
+      );
+    }
+  });
+
+  dataset.archives.forEach((archive, index) => {
+    if (!archive.year?.trim()) {
+      issues.push(
+        issue(
+          'MISSING_ARCHIVE_YEAR',
+          `archives[${index}].year`,
+          '档案必须提供可展示年份。',
+        ),
+      );
+    }
+    if (!SOURCE_ID_PATTERN.test(archive.sourceId)) {
+      issues.push(
+        issue(
+          'INVALID_SOURCE_ID',
+          `archives[${index}].sourceId`,
+          '档案必须提供小写连字符格式的来源 ID。',
+        ),
+      );
+    }
+  });
+
+  [...dataset.archives, ...dataset.media].forEach((item, index) => {
+    if (item.image.trim() && !item.alt.trim()) {
+      const collection = index < dataset.archives.length ? 'archives' : 'media';
+      const itemIndex =
+        collection === 'archives' ? index : index - dataset.archives.length;
+      issues.push(
+        issue(
+          'MISSING_ALT_TEXT',
+          `${collection}[${itemIndex}].alt`,
+          '图片必须提供替代文本。',
+        ),
+      );
+    }
+  });
+
+  return issues;
+};

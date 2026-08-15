@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>正在返回上海大学科学家精神数字展馆</title>
+  </head>
+  <body>
+    <p>正在返回展馆，请稍候……</p>
+    <script>
+      (() => {
+        const basePath = "__VITE_BASE_PATH__";
+        const { pathname, search, hash } = window.location;
+        const relativePath = pathname.startsWith(basePath)
+          ? `/${pathname.slice(basePath.length).replace(/^\/+/, '')}`
+          : '/';
+
+        window.sessionStorage.setItem(
+          'museum:pages-route',
+          JSON.stringify({ pathname: relativePath, search, hash }),
+        );
+        window.location.replace(basePath);
+      })();
+    </script>
+  </body>
+</html>

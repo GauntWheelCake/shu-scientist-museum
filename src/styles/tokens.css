@@ -1,0 +1,64 @@
+:root {
+  color-scheme: light;
+
+  --color-brand: #8f1d22;
+  --color-brand-deep: color-mix(in srgb, var(--color-brand) 72%, var(--color-ink));
+  --color-accent: #c52a2f;
+  --color-paper: #f3efe7;
+  --color-paper-raised: color-mix(in srgb, var(--color-paper) 92%, var(--color-archive));
+  --color-ink: #171717;
+  --color-ink-muted: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
+  --color-archive: #d5c5a6;
+  --color-bronze: #a68452;
+  --color-line: rgb(23 23 23 / 14%);
+  --color-overlay: rgb(23 23 23 / 64%);
+
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-display: "Songti SC", STSong, SimSun, "Noto Serif CJK SC", serif;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.375rem;
+  --font-size-2xl: clamp(1.75rem, 3vw, 2.5rem);
+  --font-size-3xl: clamp(2.25rem, 5vw, 4.5rem);
+  --line-height-tight: 1.25;
+  --line-height-body: 1.75;
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 2.5rem;
+  --space-6: 3rem;
+  --space-8: 4rem;
+  --space-10: 5rem;
+  --space-12: 6rem;
+
+  --content-width: 75rem;
+  --content-narrow: 48rem;
+  --page-gutter: 1rem;
+  --header-height: 5rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --shadow-soft: 0 1rem 3rem rgb(23 23 23 / 10%);
+
+  --duration-fast: 160ms;
+  --duration-base: 280ms;
+  --duration-slow: 520ms;
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (min-width: 42rem) {
+  :root {
+    --page-gutter: 1.5rem;
+  }
+}
+
+@media (min-width: 68rem) {
+  :root {
+    --page-gutter: 2rem;
+  }
+}
