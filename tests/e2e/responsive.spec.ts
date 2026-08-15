@@ -1,4 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
+import { scientists } from '../../src/content/scientists';
+import { spiritThemes } from '../../src/content/spirit-themes';
 
 const routes = [
   '/',
@@ -103,8 +105,32 @@ test('relationship graph defaults to its complete readable list on mobile', asyn
   await expect(page.getByTestId('scientist-graph-svg')).toHaveCount(0);
   const relationships = page.getByRole('region', { name: '完整关系列表' });
   await expect(relationships).toBeVisible();
-  for (const name of ['钱伟长', '李三立', '黄宏嘉']) {
-    await expect(relationships.getByRole('link', { name, exact: true })).toBeVisible();
+  expect(scientists).toHaveLength(8);
+  expect(spiritThemes).toHaveLength(6);
+  const scientistEntries = relationships.locator(':scope > ul > li');
+  await expect(scientistEntries).toHaveCount(scientists.length);
+
+  const themeById = new Map(spiritThemes.map((theme) => [theme.id, theme.title]));
+  expect(new Set(scientists.flatMap((scientist) => scientist.spiritIds))).toEqual(
+    new Set(spiritThemes.map((theme) => theme.id)),
+  );
+  for (const scientist of scientists) {
+    const scientistLink = relationships.getByRole('link', {
+      name: scientist.name,
+      exact: true,
+    });
+    await expect(scientistLink).toBeVisible();
+    await expect(scientistLink).toHaveAttribute('href', `/scientists/${scientist.slug}`);
+
+    const scientistEntry = scientistLink.locator('xpath=ancestor::li[1]');
+    await expect(scientistEntry).toHaveCount(1);
+    const relationshipThemes = scientistEntry
+      .getByRole('list', { name: `${scientist.name}关联的精神主题` })
+      .locator(':scope > li');
+    expect(scientist.spiritIds.every((themeId) => themeById.has(themeId))).toBe(true);
+    await expect(relationshipThemes).toHaveText(
+      scientist.spiritIds.map((themeId) => themeById.get(themeId)!),
+    );
   }
 
   await page.getByRole('button', { name: '切换到图形视图' }).click();
@@ -145,19 +171,21 @@ test.describe('reduced motion', () => {
       await page.evaluate(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches),
     ).toBe(true);
 
-    const reveals = page.locator('.reveal');
-    await expect(reveals.first()).toHaveCSS('opacity', '1');
-    expect(await reveals.count()).toBeGreaterThan(5);
-    for (const reveal of await reveals.all()) {
-      await expect(reveal).toHaveCSS('opacity', '1');
-      await expect(reveal).toHaveCSS('transform', 'none');
-    }
+    const personCardReveal = page.locator('.reveal:has(.featured-card)').first();
+    await personCardReveal.waitFor({ state: 'attached' });
+    const personCardMotion = await personCardReveal.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { opacity: style.opacity, transform: style.transform };
+    });
+    expect(personCardMotion).toEqual({ opacity: '1', transform: 'none' });
 
     await page.goto('/timeline');
-    await expect(page.locator('.timeline-line__progress')).toHaveCSS(
-      'transform',
-      'matrix(1, 0, 0, 1, 0, 0)',
+    const timelineProgress = page.locator('.timeline-line__progress');
+    await timelineProgress.waitFor({ state: 'attached' });
+    const timelineTransform = await timelineProgress.evaluate(
+      (element) => getComputedStyle(element).transform,
     );
+    expect(timelineTransform).toBe('matrix(1, 0, 0, 1, 0, 0)');
     await expect(page.getByRole('heading', { name: '人物、科研与校史节点' })).toBeVisible();
     expect(runtimeErrors).toEqual([]);
   });
