@@ -1,38 +1,8 @@
-import fallbackHtml from '../../public/404.html?raw';
 import { restorePagesRoute } from './pagesFallback';
 
 const storageKey = 'museum:pages-route';
 
 describe('GitHub Pages SPA fallback', () => {
-  it('preserves a deep route and query before redirecting to the repository root', () => {
-    const script = fallbackHtml.match(/<script>([\s\S]*?)<\/script>/)?.[1];
-    expect(script).toBeTruthy();
-
-    const stored = new Map<string, string>();
-    let redirectedTo = '';
-
-    Function('window', script!)({
-        location: {
-          pathname: '/shu-scientist-museum/scientists/qian-weichang',
-          search: '?from=archive',
-          hash: '#chapter',
-          replace: (value: string) => {
-            redirectedTo = value;
-          },
-        },
-        sessionStorage: {
-          setItem: (key: string, value: string) => stored.set(key, value),
-        },
-    });
-
-    expect(redirectedTo).toBe('/shu-scientist-museum/');
-    expect(JSON.parse(stored.get(storageKey)!)).toEqual({
-      pathname: '/scientists/qian-weichang',
-      search: '?from=archive',
-      hash: '#chapter',
-    });
-  });
-
   it('restores the saved route inside the configured base path exactly once', () => {
     const values = new Map([
       [

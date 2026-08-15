@@ -9,7 +9,7 @@
     <p>正在返回展馆，请稍候……</p>
     <script>
       (() => {
-        const basePath = '/shu-scientist-museum/';
+        const basePath = "__VITE_BASE_PATH__";
         const { pathname, search, hash } = window.location;
         const relativePath = pathname.startsWith(basePath)
           ? `/${pathname.slice(basePath.length).replace(/^\/+/, '')}`
