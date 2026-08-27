@@ -797,7 +797,6 @@
 }
 
 .graph-preview {
-  position: relative;
   min-height: 24rem;
   border: 1px solid var(--color-archive);
   background:
@@ -806,67 +805,41 @@
   background-size: 1rem 1rem, auto;
 }
 
-.graph-preview__node {
-  position: absolute;
-  z-index: 2;
-  display: grid;
-  width: 5rem;
-  height: 5rem;
-  place-items: center;
-  border: 1px solid var(--color-bronze);
-  border-radius: 50%;
-  color: var(--color-paper-raised);
-  background: var(--color-brand);
+.graph-preview svg {
+  display: block;
+  width: 100%;
+  height: 24rem;
+}
+
+.graph-preview__edges line {
+  stroke: var(--color-bronze);
+  stroke-width: 1;
+}
+
+.graph-preview__node circle {
+  stroke: var(--color-bronze);
+  fill: var(--color-brand);
+}
+
+.graph-preview__node text {
+  fill: var(--color-paper-raised);
   font-family: var(--font-display);
+  font-size: 1.25rem;
   font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
 }
 
-.graph-preview__node--person {
-  top: 4rem;
-  left: 4rem;
+.graph-preview__node--event circle {
+  fill: var(--color-ink);
 }
 
-.graph-preview__node--event {
-  top: 8rem;
-  right: 4rem;
-  background: var(--color-ink);
+.graph-preview__node--spirit circle {
+  fill: var(--color-archive);
 }
 
-.graph-preview__node--spirit {
-  right: 10rem;
-  bottom: 3rem;
-  color: var(--color-ink);
-  background: var(--color-archive);
-}
-
-.graph-preview__axis {
-  position: absolute;
-  z-index: 1;
-  height: 1px;
-  background: var(--color-bronze);
-  transform-origin: left;
-}
-
-.graph-preview__axis--one {
-  top: 7rem;
-  left: 8rem;
-  width: 55%;
-  transform: rotate(10deg);
-}
-
-.graph-preview__axis--two {
-  top: 9rem;
-  left: 7rem;
-  width: 48%;
-  transform: rotate(48deg);
-}
-
-.graph-preview__axis--three {
-  right: 7rem;
-  bottom: 7rem;
-  width: 35%;
-  transform: rotate(-60deg);
-  transform-origin: right;
+.graph-preview__node--spirit text {
+  fill: var(--color-ink);
 }
 
 .activity-status {
@@ -1035,8 +1008,8 @@
     min-height: 20rem;
   }
 
-  .graph-preview__node--spirit {
-    right: 4rem;
+  .graph-preview svg {
+    height: 20rem;
   }
 
   .media-status-list li {

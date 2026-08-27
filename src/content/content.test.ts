@@ -139,6 +139,37 @@ describe('validateContent', () => {
       ]),
     );
   });
+
+  it.each(['javascript:alert(1)', 'data:text/plain,unsafe', 'http://example.com/video', 'not a url'])(
+    'rejects a published media URL that is not valid https: %s',
+    (url) => {
+      const invalidDataset: ContentDataset = {
+        scientists,
+        stories,
+        events,
+        archives,
+        activities,
+        media: [
+          {
+            ...media[0],
+            status: 'published',
+            platform: '示例平台',
+            url,
+          },
+        ],
+        spiritThemes,
+      };
+
+      expect(validateContent(invalidDataset)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            code: 'PUBLISHED_MEDIA_INVALID_URL',
+            path: 'media[0].url',
+          }),
+        ]),
+      );
+    },
+  );
 });
 
 describe('museum content', () => {

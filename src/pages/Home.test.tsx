@@ -117,10 +117,13 @@ it('labels planned practice separately from completed activity', () => {
   );
 
   const status = screen.getByRole('group', { name: '实践活动状态' });
-  expect(within(status).getByText('4')).toBeInTheDocument();
-  expect(within(status).getByText('计划实践路线')).toBeInTheDocument();
-  expect(within(status).getByText('0')).toBeInTheDocument();
-  expect(within(status).getByText('已记录完成活动')).toBeInTheDocument();
+  const planned = within(status).getByText('计划实践路线').closest('div');
+  const completed = within(status).getByText('已记录完成活动').closest('div');
+
+  expect(planned).not.toBeNull();
+  expect(within(planned!).getByText('4')).toBeInTheDocument();
+  expect(completed).not.toBeNull();
+  expect(within(completed!).getByText('0')).toBeInTheDocument();
 });
 
 it('groups verified museum counts under an accessible label', () => {
@@ -145,4 +148,33 @@ it('explains the relationship graph in text', () => {
   expect(
     screen.getByText('通过人物、科学事件与精神主题之间的关联，发现跨越年代的共同选择。'),
   ).toBeInTheDocument();
+});
+
+it('connects every graph preview edge to the declared node centers', () => {
+  installReducedMotionPreference(true);
+  const { container } = render(
+    <MemoryRouter>
+      <Home />
+    </MemoryRouter>,
+  );
+
+  const preview = container.querySelector('.graph-preview');
+  const nodes = new Map(
+    [...(preview?.querySelectorAll('[data-graph-node]') ?? [])].map((node) => [
+      node.getAttribute('data-graph-node'),
+      [node.getAttribute('cx'), node.getAttribute('cy')],
+    ]),
+  );
+  const edges = [...(preview?.querySelectorAll('[data-from][data-to]') ?? [])];
+
+  expect(nodes.size).toBe(3);
+  expect(edges).toHaveLength(3);
+  for (const edge of edges) {
+    expect([edge.getAttribute('x1'), edge.getAttribute('y1')]).toEqual(
+      nodes.get(edge.getAttribute('data-from')),
+    );
+    expect([edge.getAttribute('x2'), edge.getAttribute('y2')]).toEqual(
+      nodes.get(edge.getAttribute('data-to')),
+    );
+  }
 });

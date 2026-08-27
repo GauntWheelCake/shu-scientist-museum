@@ -3,6 +3,7 @@ import type {
   ValidationIssue,
   ValidationIssueCode,
 } from './types';
+import { isValidPublishedMediaUrl } from './media-url';
 
 const CORE_SCIENTISTS = [
   'scientist-qian-weichang',
@@ -189,6 +190,19 @@ export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
           'PUBLISHED_MEDIA_WITHOUT_URL',
           `media[${index}].url`,
           '已发布影音必须提供可访问 URL。',
+        ),
+      );
+    }
+    if (
+      item.status === 'published' &&
+      item.url?.trim() &&
+      !isValidPublishedMediaUrl(item.url)
+    ) {
+      issues.push(
+        issue(
+          'PUBLISHED_MEDIA_INVALID_URL',
+          `media[${index}].url`,
+          '已发布影音 URL 必须是有效的 HTTPS 地址。',
         ),
       );
     }

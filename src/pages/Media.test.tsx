@@ -36,6 +36,29 @@ describe('Media', () => {
     });
   });
 
+  it.each([
+    'javascript:alert(1)',
+    'data:text/html,<h1>unsafe</h1>',
+    'http://example.com/video',
+    'not a url',
+  ])('does not expose a media action for non-https URL %s', (url) => {
+    expect(
+      mediaAction({
+        id: 'unsafe',
+        title: '不安全公开课程',
+        kind: 'video',
+        status: 'published',
+        description: '用于验证链接协议。',
+        platform: '示例平台',
+        url,
+        image: '/images/media/unsafe.webp',
+        alt: '不安全公开课程封面',
+        scientistIds: [],
+        spiritIds: [],
+      }),
+    ).toBeNull();
+  });
+
   it('replaces a failed cover with an honest fallback', () => {
     render(
       <MemoryRouter>

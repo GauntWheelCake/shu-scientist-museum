@@ -62,12 +62,13 @@ describe('GitHub workflow contracts', () => {
       push: { branches: ['main'] },
       workflow_dispatch: {},
     });
-    expect(workflow.permissions).toMatchObject({
-      contents: 'read',
+    expect(workflow.permissions).toEqual({});
+    expect(build.if).toBe("github.ref == 'refs/heads/main'");
+    expect(build.permissions).toEqual({ contents: 'read', pages: 'read' });
+    expect(deploy.permissions).toEqual({
       pages: 'write',
       'id-token': 'write',
     });
-    expect(build.if).toBe("github.ref == 'refs/heads/main'");
     expect(uses(workflow, 'build')).toEqual(
       expect.arrayContaining([
         'actions/checkout@v4',
@@ -76,9 +77,16 @@ describe('GitHub workflow contracts', () => {
         'actions/upload-pages-artifact@v3',
       ]),
     );
-    expect(build.steps.find((step) => step.run === 'npm run build')?.env).toEqual({
+    const qualityStepIndex = build.steps.findIndex((step) => step.run === 'npm run check');
+    const uploadStepIndex = build.steps.findIndex(
+      (step) => step.uses === 'actions/upload-pages-artifact@v3',
+    );
+    expect(runs(workflow, 'build')).toEqual(['npm ci', 'npm run check']);
+    expect(build.steps[qualityStepIndex]?.env).toEqual({
       VITE_BASE_PATH: '/shu-scientist-museum/',
     });
+    expect(qualityStepIndex).toBeGreaterThan(-1);
+    expect(uploadStepIndex).toBeGreaterThan(qualityStepIndex);
     expect(build.steps.find((step) => step.uses === 'actions/upload-pages-artifact@v3')?.with).toMatchObject({
       path: 'dist',
     });

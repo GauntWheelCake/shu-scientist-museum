@@ -211,7 +211,7 @@ Expected: FAIL，原因是验证器尚未实现。
 
 - [ ] **Step 4: 实现验证器并录入内容**
 
-至少录入钱伟长、李三立、黄宏嘉三个完整 `featured` 人物，以及孙晋良、周邦新、杨雄里、谢少荣、岳晓冬五张群像卡。人物事实优先取自 `E:\2026社会实践写word+做网站\实践计划.docx`、四份宣讲 PPT 和往届 PDF；不能确认的年份不写入。
+至少录入钱伟长、李三立、黄宏嘉三个完整 `featured` 人物，以及孙晋良、周邦新、杨雄里、谢少荣、岳晓冬五张群像卡。人物事实优先取自 `<source-library>/实践计划.docx`、四份宣讲 PPT 和往届 PDF；不能确认的年份不写入。
 
 - [ ] **Step 5: 添加独立内容检查脚本**
 
@@ -473,7 +473,7 @@ git commit -m "feat: add practice media and project pages"
 
 **Interfaces:**
 - Produces: `sources` 来源登记；`getPageMeta(pathname)`；内容维护规则。
-- Consumes: 现有 `素材/logo.svg` 和 `E:\2026社会实践写word+做网站` 中经检查的资料。
+- Consumes: 现有 `<workspace>/素材/logo.svg` 和 `<source-library>` 中经检查的资料。
 
 - [ ] **Step 1: 写来源与元数据测试**
 
