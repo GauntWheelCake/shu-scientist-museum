@@ -88,13 +88,17 @@ describe('Gallery', () => {
     expect(screen.getByLabelText('精神关键词')).toHaveValue('spirit-innovation');
   });
 
-  it('keeps identity visible, hides unknown years, and replaces failed portraits without a broken image', () => {
+  it('keeps identity and known years visible, hides unknown years, and replaces failed portraits without a broken image', () => {
     renderGallery();
 
     const sunCard = screen.getByText('孙晋良').closest('article');
     expect(sunCard).not.toBeNull();
     expect(within(sunCard!).getByText('中国工程院院士，复合材料专家')).toBeVisible();
-    expect(sunCard!.querySelector('.scientist-card__years')).toBeNull();
+    expect(within(sunCard!).getByText('1946年生')).toBeVisible();
+
+    const xieCard = screen.getByText('谢少荣').closest('article');
+    expect(xieCard).not.toBeNull();
+    expect(xieCard!.querySelector('.scientist-card__years')).toBeNull();
 
     const portrait = within(sunCard!).getByRole('img', { name: '孙晋良肖像' });
     fireEvent.error(portrait);
