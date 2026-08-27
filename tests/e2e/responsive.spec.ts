@@ -19,6 +19,39 @@ const routes = [
 
 const widths = [360, 390, 768, 1024, 1440] as const;
 
+const contrastSelectors = [
+  '.guide-card__index',
+  '.research-chapters__number',
+  '.footprints-index span',
+  '.about-page__chain li span',
+  '.about-page__positioning-label',
+] as const;
+
+function colorChannels(value: string): [number, number, number] {
+  const rgb = value.match(/rgba?\(\s*([\d.]+)[, ]+([\d.]+)[, ]+([\d.]+)/);
+  if (rgb) return [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])];
+
+  const srgb = value.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/);
+  if (srgb) return [Number(srgb[1]) * 255, Number(srgb[2]) * 255, Number(srgb[3]) * 255];
+  throw new Error(`Unsupported computed color: ${value}`);
+}
+
+function relativeLuminance(value: string): number {
+  const [red, green, blue] = colorChannels(value).map((channel) => {
+    const normalized = channel / 255;
+    return normalized <= 0.04045
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+}
+
+function contrastRatio(foreground: string, background: string): number {
+  const lighter = Math.max(relativeLuminance(foreground), relativeLuminance(background));
+  const darker = Math.min(relativeLuminance(foreground), relativeLuminance(background));
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 function guardRuntimeErrors(page: Page): string[] {
   const errors: string[] = [];
 
@@ -36,6 +69,7 @@ test('all museum pages avoid horizontal overflow at five acceptance widths', asy
   // This matrix performs 60 real navigations.
   test.slow();
   const runtimeErrors = guardRuntimeErrors(page);
+  const contrastFailures: string[] = [];
 
   for (const width of widths) {
     await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
@@ -54,9 +88,53 @@ test('all museum pages avoid horizontal overflow at five acceptance widths', asy
           rootClientWidth: dimensions.rootScrollWidth,
         }),
       );
+
+      for (const selector of contrastSelectors) {
+        const elements = page.locator(selector);
+        const elementCount = await elements.count();
+        if (
+          selector === '.about-page__positioning-label' &&
+          route === '/about' &&
+          elementCount === 0
+        ) {
+          contrastFailures.push(`${selector} on ${route} at ${width}px is missing`);
+        }
+        for (let index = 0; index < elementCount; index += 1) {
+          const colors = await elements.nth(index).evaluate((element) => {
+            const foreground = getComputedStyle(element).color;
+            let node: Element | null = element;
+            let background = 'transparent';
+
+            while (node) {
+              const candidate = getComputedStyle(node).backgroundColor;
+              const rgbaAlpha = candidate.match(/rgba\([^)]*,\s*([\d.]+)\s*\)$/)?.[1];
+              const modernAlpha = candidate.match(/\/\s*([\d.]+)\s*\)$/)?.[1];
+              const translucent =
+                candidate === 'transparent' ||
+                (rgbaAlpha !== undefined && Number(rgbaAlpha) < 1) ||
+                (modernAlpha !== undefined && Number(modernAlpha) < 1);
+              if (!translucent) {
+                background = candidate;
+                break;
+              }
+              node = node.parentElement;
+            }
+
+            return { foreground, background };
+          });
+          const ratio = contrastRatio(colors.foreground, colors.background);
+          if (ratio < 4.5) {
+            contrastFailures.push(
+              `${selector} on ${route} at ${width}px has contrast ${ratio.toFixed(2)}:1 ` +
+                `(${colors.foreground} on ${colors.background})`,
+            );
+          }
+        }
+      }
     }
   }
 
+  expect(contrastFailures).toEqual([]);
   expect(runtimeErrors).toEqual([]);
 });
 

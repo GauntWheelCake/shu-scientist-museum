@@ -17,7 +17,7 @@ export function About(): JSX.Element {
       />
       <section className="about-page" aria-labelledby="about-positioning-title">
         <article className="about-page__positioning">
-          <p>项目定位</p>
+          <p className="about-page__positioning-label">项目定位</p>
           <h2 id="about-positioning-title">追寻前辈榜样，筑梦科技自立自强</h2>
           <p>
             项目聚焦上海大学老一辈科研工作者的科研事迹，以科学家精神宣讲为主题，是计算机工程与科学学院持续建设的常态化思政实践品牌。
