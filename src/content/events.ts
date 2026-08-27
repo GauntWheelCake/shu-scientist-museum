@@ -11,9 +11,10 @@ export const events: TimelineEvent[] = [
   },
   {
     id: 'event-huang-microwave-1964',
-    dateLabel: '1964年',
+    dateLabel: '20世纪60年代',
     title: '《微波原理》出版',
-    description: '黄宏嘉编写的《微波原理》由科学出版社出版。',
+    description:
+      '约百万字的《微波原理》由科学出版社出版，成为国内该领域第一本专著。',
     scientistIds: ['scientist-huang-hongjia'],
     spiritIds: ['spirit-truth-seeking', 'spirit-dedication'],
   },

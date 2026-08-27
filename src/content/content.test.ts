@@ -259,6 +259,39 @@ describe('museum content', () => {
     );
   });
 
+  it('uses evidence-backed, conflict-safe research copy for Huang Hongjia', () => {
+    const huang = scientists.find(
+      ({ id }) => id === 'scientist-huang-hongjia',
+    )!;
+    const microwave = huang.chapters.find(
+      ({ id }) => id === 'chapter-huang-microwave-principles',
+    )!;
+    const fiber = huang.chapters.find(
+      ({ id }) => id === 'chapter-huang-single-mode-fiber',
+    )!;
+    const microwaveEvent = events.find(
+      ({ id }) => id === 'event-huang-microwave-1964',
+    )!;
+
+    expect(huang.years).toBe('1924—2021');
+    expect(microwave.action).toBe(
+      '20世纪60年代，他把多年学习、实验和思考整理成约百万字的《微波原理》，由科学出版社出版。',
+    );
+    expect(microwave.significance).toBe(
+      '该书成为国内该领域第一本专著，被国际学界称为一本“为中国人争气的书”。',
+    );
+    expect(fiber.action).toBe(
+      '1979年，他在上海科学技术大学创建波科学研究实验室；此后带领团队并与上海石英厂等单位合作开展单模光纤研究，研制出我国第一根单模光纤。',
+    );
+    expect(
+      huang.chapters.some(({ id }) => id === 'chapter-huang-wave-plate'),
+    ).toBe(false);
+    expect(microwaveEvent.dateLabel).toBe('20世纪60年代');
+    expect(JSON.stringify([huang, microwaveEvent])).not.toMatch(
+      /煤气灶|黄氏波片|1964年出版/,
+    );
+  });
+
   it('uses research work rather than study or administration for Qian Weichang chapters', () => {
     const qianWeichang = scientists.find(
       ({ id }) => id === 'scientist-qian-weichang',

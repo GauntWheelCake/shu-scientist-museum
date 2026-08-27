@@ -19,6 +19,7 @@ it('sorts events by the first stated year while preserving source order within a
     '新上海大学合并组建',
     '自强3000进入全球TOP500',
   ]);
+  expect(within(events[1]).getByText('20世纪60年代')).toBeVisible();
   expect(within(events[2]).getByText('1980年前后')).toBeVisible();
 });
 
