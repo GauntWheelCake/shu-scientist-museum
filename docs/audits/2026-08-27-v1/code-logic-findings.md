@@ -49,7 +49,6 @@ rg -n "/images/|/logo|og-cover" src index.html public
 | Runtime dependency `motion` | Redundant — CL-002 | It is declared as a production dependency but has no import; animation uses React, CSS, observers and animation frames. |
 | Direct dev dependency `playwright` | Redundant — CL-003 | All project imports target `@playwright/test`; that package itself declares the `playwright` dependency and CLI binary. |
 | `prettier` dev tool | Safe | It is a developer-only formatter and does not enter the production graph; absence from a required script is not sufficient evidence for removal. |
-| Homepage graph-preview test | Defective regression boundary — CL-004 | The test compares raw SVG attributes only and remains green despite the user-supplied browser evidence of detached lines. |
 
 ## Mutation evidence
 
@@ -94,16 +93,6 @@ The combined post-restore run passed 7 files / 37 tests.
 - Evidence: Three imports target `@playwright/test`; direct `playwright` import search returns no match; installed `@playwright/test` declares both `dependencies.playwright` and `bin.playwright`.
 - Regression test boundary: Remove only the root `playwright` declaration, regenerate the lockfile, then run `npm ci` and `npx playwright test` to prove CLI/browser behavior remains intact.
 - Recommended smallest fix: Remove the direct `playwright` dev dependency and retain `@playwright/test`.
-
-## CL-004 — Homepage graph-preview test cannot detect rendered line detachment
-- Severity: Important
-- Location: `src/pages/Home.test.tsx:159`; `src/pages/Home.tsx:216`
-- Reproduction: Compare the user-supplied desktop screenshot, where preview lines visibly terminate away from their nodes and extend outside the intended connection, with the passing test `connects every graph preview edge to the declared node centers`.
-- Expected: The regression boundary fails when a line is visually detached from its declared node after SVG sizing, CSS and browser transforms are applied.
-- Actual: The unit test only compares string values of `x1/y1/x2/y2` with `cx/cy`. It does not render layout or project SVG coordinates into viewport coordinates, so it passes while the browser presentation is visibly broken.
-- Evidence: `Home.test.tsx:169-184` uses only `getAttribute`; the current screenshot provides browser-level counter-evidence. The Task 1 full suite and this task's focused suite remain green.
-- Regression test boundary: Add a Playwright assertion at the affected desktop viewport that converts line endpoints and node centers through `getScreenCTM()` (with a small pixel tolerance), plus stable screenshot evidence in the ignored audit workspace.
-- Recommended smallest fix: Treat the visual root cause and production correction as Task 4/remediation work; replace or supplement the raw-attribute unit test with the browser-level geometry assertion.
 
 ## No defect observed — URL, navigation, dialog, and cleanup logic
 - Commands/files checked: The four static inventories; `src/app/publicAsset.ts`; `src/content/media-url.ts`; `src/pages/mediaAction.ts`; `Gallery.tsx`; `Spirit.tsx`; `Header.tsx`; `ArchiveViewer.tsx`; `ScientistGraph.tsx`; `CountUp.tsx`; `Reveal.tsx`; `TimelineLine.tsx`; related unit and E2E tests.
