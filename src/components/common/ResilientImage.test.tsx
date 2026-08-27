@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { withBasePath } from '../../app/publicAsset';
 import { ResilientImage } from './ResilientImage';
 
 describe('ResilientImage', () => {
@@ -16,7 +17,7 @@ describe('ResilientImage', () => {
 
     expect(screen.getByRole('img', { name: '人物肖像' })).toHaveAttribute(
       'src',
-      '/images/second.webp',
+      withBasePath('/images/second.webp'),
     );
     expect(screen.queryByRole('img', { name: '人物肖像暂缺' })).not.toBeInTheDocument();
 
@@ -26,7 +27,7 @@ describe('ResilientImage', () => {
 
     expect(screen.getByRole('img', { name: '人物肖像' })).toHaveAttribute(
       'src',
-      '/images/first.webp',
+      withBasePath('/images/first.webp'),
     );
   });
 });
