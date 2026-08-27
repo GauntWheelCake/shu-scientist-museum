@@ -38,11 +38,11 @@ describe('ScientistDetail', () => {
     expect(screen.getByRole('link', { name: /下一位核心人物/ })).toBeInTheDocument();
   });
 
-  it('uses a stable portrait fallback and hides unknown years and an empty archive section', () => {
+  it('uses a stable portrait fallback, shows sourced years and hides an empty archive section', () => {
     renderDetail('sun-jinliang');
 
     expect(screen.queryByText('档案珍藏')).not.toBeInTheDocument();
-    expect(document.querySelector('.scientist-hero__years')).toBeNull();
+    expect(screen.getByText('1946年生')).toBeVisible();
 
     const portrait = screen.getByRole('img', { name: '孙晋良肖像' });
     fireEvent.error(portrait);
@@ -56,9 +56,21 @@ describe('ScientistDetail', () => {
 
     const spiritSection = screen.getByRole('heading', { name: '精神印记' }).closest('section');
     expect(spiritSection).not.toBeNull();
-    expect(within(spiritSection!).getByRole('heading', { name: '胸怀祖国' })).toBeInTheDocument();
-    expect(within(spiritSection!).getByRole('heading', { name: '求真务实' })).toBeInTheDocument();
-    expect(within(spiritSection!).queryByRole('heading', { name: '育人传承' })).not.toBeInTheDocument();
+    expect(
+      within(spiritSection!).getByRole('heading', {
+        name: '胸怀祖国、服务人民',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(spiritSection!).getByRole('heading', {
+        name: '追求真理、严谨治学',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(spiritSection!).queryByRole('heading', {
+        name: '甘为人梯、奖掖后学',
+      }),
+    ).not.toBeInTheDocument();
   });
 
   it('renders the in-site 404 destination for an invalid scientist slug', () => {

@@ -173,6 +173,17 @@ describe('validateContent', () => {
 });
 
 describe('museum content', () => {
+  it('uses the six official science-spirit titles without changing stable IDs', () => {
+    expect(spiritThemes.map(({ id, title }) => [id, title])).toEqual([
+      ['spirit-patriotism', '胸怀祖国、服务人民'],
+      ['spirit-innovation', '勇攀高峰、敢为人先'],
+      ['spirit-truth-seeking', '追求真理、严谨治学'],
+      ['spirit-dedication', '淡泊名利、潜心研究'],
+      ['spirit-collaboration', '集智攻关、团结协作'],
+      ['spirit-education', '甘为人梯、奖掖后学'],
+    ]);
+  });
+
   it('ships the eight sourced profiles and complete core-scientist chapters', () => {
     const issues = validateContent({
       scientists,
