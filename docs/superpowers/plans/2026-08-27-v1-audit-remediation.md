@@ -27,8 +27,9 @@
 |---|---|---|
 | `src/app/pagesFallback.ts` | Parse and restore a Pages deep route without allowing storage denial to abort startup. | `getPagesRouteStorage(source): RouteStorage \| undefined`; `restorePagesRoute({ baseUrl, storage?, replace }): void`. |
 | `src/app/router.tsx` | Define the unchanged route tree and construct it only after restoration. | Export typed `appRoutes: RouteObject[]` for memory-router tests and `createAppRouter(basename?: string)` for production; remove eager `appRouter`. |
-| `src/main.tsx` | Restore history, then construct and render the router. | Calls `getPagesRouteStorage(window)`, `restorePagesRoute(...)`, then `createAppRouter()`. |
-| `public/404.html` | Save a relative deep route when possible and always navigate to the application base. | Storage write is inside `try`; base redirect is inside `finally`. |
+| `src/app/bootstrap.ts` | Own the production startup order so the same callable boundary is exercised by integration tests and `main.tsx`. | Export `bootstrapApp({ source, baseUrl, render }): ReturnType<typeof createAppRouter>`; restore history before router construction. |
+| `src/main.tsx` | Invoke the tested startup boundary and render the returned router. | Calls only `bootstrapApp(...)` for Pages restoration/router construction. |
+| `public/404.html` | Save a relative deep route when possible and always navigate to the application base without leaking storage errors. | Storage write is inside `try/catch`; base redirect is inside `finally`. |
 | `src/content/scientists.ts` | Hold corrected scientist, chapter, story, field, and relationship copy. | Data shape is unchanged. |
 | `src/content/events.ts` | Hold the five retained evidence-backed timeline records. | Remove only `event-li-911-1964`; other IDs remain unchanged. |
 | `src/content/spirit-themes.ts` | Hold the six official full theme titles. | Six stable `spirit-*` IDs and all references remain unchanged. |
@@ -56,6 +57,7 @@
 - Modify: `src/app/pagesFallback.ts`
 - Modify: `src/app/pagesFallback.test.ts`
 - Modify: `src/app/router.tsx`
+- Create: `src/app/bootstrap.ts`
 - Create: `tests/build/pages-fallback-integration.spec.tsx`
 - Modify: `src/main.tsx`
 - Modify: `src/pages/Home.test.tsx`
@@ -64,7 +66,7 @@
 
 **Interfaces:**
 - Consumes: storage key `museum:pages-route`, `import.meta.env.BASE_URL`, the current route tree, and `window.history.replaceState`.
-- Produces: `getPagesRouteStorage(source): RouteStorage | undefined`, exception-safe `restorePagesRoute`, and lazy `createAppRouter(basename?)` used after restoration.
+- Produces: `getPagesRouteStorage(source): RouteStorage | undefined`, exception-safe `restorePagesRoute`, lazy `createAppRouter(basename?)`, and the single tested `bootstrapApp(...)` startup boundary used by `main.tsx`.
 
 - [ ] **Step 1: Add RED storage-denial and bootstrap-order tests**
 
@@ -113,7 +115,7 @@ const cases = [
 ] as const;
 ```
 
-After the generated script redirects to `/shu-scientist-museum/`, set jsdom history to that base, call `restorePagesRoute` with the captured `Map`, construct `createAppRouter('/shu-scientist-museum/')`, render `<RouterProvider router={router} />`, and assert the expected level-one heading. Unmount and call `router.dispose()` before the next case. This single integration boundary must fail if either the generated fallback payload or restoration-before-construction ordering regresses.
+After the generated script redirects to `/shu-scientist-museum/`, set jsdom history to that base and call the production `bootstrapApp(...)` boundary with the captured storage adapter and a render callback that mounts `<RouterProvider router={router} />`; assert the expected level-one heading. Also read `src/main.tsx` and assert it imports/calls `bootstrapApp` and does not import/call `createAppRouter` or `restorePagesRoute` directly. Unmount and call `router.dispose()` before the next case. This integration boundary must fail if the generated fallback payload, the restoration-before-construction order, or the actual `main.tsx` startup wiring regresses.
 
 In `tests/build/pages-fallback-build.spec.ts`, execute the generated script a second time with `sessionStorage.setItem` throwing `DOMException('Access denied', 'SecurityError')` and assert `redirectedTo === basePath`.
 
@@ -153,17 +155,35 @@ export function createAppRouter(basename = import.meta.env.BASE_URL) {
 }
 ```
 
-In `src/pages/Home.test.tsx`, replace the `appRouter` import with `appRoutes` and pass `appRoutes` directly to `createMemoryRouter`. In `src/main.tsx`, perform calls in this exact order:
+In `src/pages/Home.test.tsx`, replace the `appRouter` import with `appRoutes` and pass `appRoutes` directly to `createMemoryRouter`.
 
-```tsx
-const storage = getPagesRouteStorage(window);
-restorePagesRoute({
-  baseUrl: import.meta.env.BASE_URL,
-  storage,
-  replace: (url) => window.history.replaceState(null, '', url),
-});
-const appRouter = createAppRouter();
+Create `src/app/bootstrap.ts` and keep the startup order inside this exported function:
+
+```ts
+type BootstrapWindow = Pick<Window, 'sessionStorage' | 'history'>;
+
+export function bootstrapApp({
+  source,
+  baseUrl,
+  render,
+}: {
+  source: BootstrapWindow;
+  baseUrl: string;
+  render: (router: ReturnType<typeof createAppRouter>) => void;
+}) {
+  const storage = getPagesRouteStorage(source);
+  restorePagesRoute({
+    baseUrl,
+    storage,
+    replace: (url) => source.history.replaceState(null, '', url),
+  });
+  const router = createAppRouter(baseUrl);
+  render(router);
+  return router;
+}
 ```
+
+In `src/main.tsx`, call only `bootstrapApp({ source: window, baseUrl: import.meta.env.BASE_URL, render: (router) => createRoot(...).render(<RouterProvider router={router} />) })`; do not construct or restore the router outside that boundary.
 
 In `public/404.html`, preserve the current payload but guarantee navigation:
 
@@ -173,6 +193,8 @@ try {
     'museum:pages-route',
     JSON.stringify({ pathname: relativePath, search, hash }),
   );
+} catch {
+  // Storage can be denied; the base navigation must still continue.
 } finally {
   window.location.replace(basePath);
 }
@@ -190,7 +212,7 @@ Expected: all focused tests pass; storage-denied fallback still redirects; the p
 - [ ] **Step 5: Commit**
 
 ```powershell
-git add src/app/pagesFallback.ts src/app/pagesFallback.test.ts src/app/router.tsx src/main.tsx src/pages/Home.test.tsx public/404.html tests/build/pages-fallback-build.spec.ts tests/build/pages-fallback-integration.spec.tsx
+git add src/app/pagesFallback.ts src/app/pagesFallback.test.ts src/app/router.tsx src/app/bootstrap.ts src/main.tsx src/pages/Home.test.tsx public/404.html tests/build/pages-fallback-build.spec.ts tests/build/pages-fallback-integration.spec.tsx
 git commit -m "fix: restore Pages routes before router startup"
 ```
 
@@ -287,7 +309,7 @@ const awardChapter = qian.chapters.find(
 const returnEvent = events.find(({ id }) => id === 'event-qian-return-1946')!;
 
 expect(awardChapter.significance).toBe(
-  '相关工作被国外学者广泛引用，并获中国科学院颁发的国家科学奖二等奖。',
+  '相关工作获中国科学院国家科学奖二等奖。',
 );
 expect(returnEvent.description).toBe(
   '1946年5月，钱伟长回国，随后任清华大学教授。',
@@ -516,7 +538,7 @@ Have a fresh reviewer compare all four IDs against the three official URLs, veri
 **Files:**
 - Modify: `src/content/scientists.ts`
 - Modify: `src/content/content.test.ts`
-- Modify: `tests/e2e/responsive.spec.ts`
+- Read: `tests/e2e/responsive.spec.ts`
 
 **Interfaces:**
 - Consumes: all eight stable scientist IDs and six stable spirit IDs.
