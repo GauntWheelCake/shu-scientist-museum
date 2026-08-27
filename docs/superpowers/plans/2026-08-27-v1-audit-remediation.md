@@ -63,10 +63,12 @@
 - Modify: `src/pages/Home.test.tsx`
 - Modify: `public/404.html`
 - Modify: `tests/build/pages-fallback-build.spec.ts`
+- Modify: `vite.config.ts`
 
 **Interfaces:**
 - Consumes: storage key `museum:pages-route`, `import.meta.env.BASE_URL`, the current route tree, and `window.history.replaceState`.
 - Produces: `getPagesRouteStorage(source): RouteStorage | undefined`, exception-safe `restorePagesRoute`, lazy `createAppRouter(basename?)`, and the single tested `bootstrapApp(...)` startup boundary used by `main.tsx`.
+- Test discovery: include `tests/build/**/*.spec.{ts,tsx}` so the production-bootstrap integration test is part of the ordinary Vitest gate.
 
 - [ ] **Step 1: Add RED storage-denial and bootstrap-order tests**
 
@@ -212,7 +214,7 @@ Expected: all focused tests pass; storage-denied fallback still redirects; the p
 - [ ] **Step 5: Commit**
 
 ```powershell
-git add src/app/pagesFallback.ts src/app/pagesFallback.test.ts src/app/router.tsx src/app/bootstrap.ts src/main.tsx src/pages/Home.test.tsx public/404.html tests/build/pages-fallback-build.spec.ts tests/build/pages-fallback-integration.spec.tsx
+git add src/app/pagesFallback.ts src/app/pagesFallback.test.ts src/app/router.tsx src/app/bootstrap.ts src/main.tsx src/pages/Home.test.tsx public/404.html tests/build/pages-fallback-build.spec.ts tests/build/pages-fallback-integration.spec.tsx vite.config.ts
 git commit -m "fix: restore Pages routes before router startup"
 ```
 
