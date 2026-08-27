@@ -1,17 +1,15 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
-import { appRouter } from './app/router';
-import { restorePagesRoute } from './app/pagesFallback';
+import { bootstrapApp } from './app/bootstrap';
 
-restorePagesRoute({
+bootstrapApp({
+  source: window,
   baseUrl: import.meta.env.BASE_URL,
-  storage: window.sessionStorage,
-  replace: (url) => window.history.replaceState(null, '', url),
+  render: (router) =>
+    createRoot(document.getElementById('root')!).render(
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>,
+    ),
 });
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <RouterProvider router={appRouter} />
-  </StrictMode>,
-);

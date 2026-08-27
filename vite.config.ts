@@ -46,7 +46,7 @@ export default defineConfig(({ mode }) => {
     base: env.VITE_BASE_PATH || '/',
     plugins: [react(), pagesFallbackBasePlugin()],
     test: {
-      include: ['src/**/*.test.{ts,tsx}', 'tests/build/**/*.spec.ts'],
+      include: ['src/**/*.test.{ts,tsx}', 'tests/build/**/*.spec.{ts,tsx}'],
       environment: 'jsdom',
       setupFiles: './src/test/setup.ts',
       globals: true,

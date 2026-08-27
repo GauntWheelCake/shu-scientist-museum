@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { createMemoryRouter, MemoryRouter, RouterProvider } from 'react-router-dom';
 import { withBasePath } from '../app/publicAsset';
-import { appRouter } from '../app/router';
+import { appRoutes } from '../app/router';
 import { Home } from './Home';
 
 function installReducedMotionPreference(matches: boolean): void {
@@ -62,7 +62,7 @@ it.each([
 it('serves the digital foyer at the configured root route', async () => {
   installReducedMotionPreference(true);
   const root = withBasePath('/');
-  const router = createMemoryRouter(appRouter.routes, {
+  const router = createMemoryRouter(appRoutes, {
     basename: root,
     initialEntries: [root],
   });
