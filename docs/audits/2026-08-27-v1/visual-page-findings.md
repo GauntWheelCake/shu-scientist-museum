@@ -8,7 +8,7 @@ Audit revision: `c8d71a5294d8d34621d2901e298fafc375f51cbb` on `audit/v1-quality-
 - Inspected all 18 baseline routes at widths 360, 390, 768, 1024, and 1440 pixels: 90/90 local route/viewport cells. Heights were 844px at 360/390 and 900px at all other widths.
 - Every cell recorded the document title, H1, body/root overflow delta, visible viewport escape, clipped controls, first keyboard focus style, image metadata/fallbacks, `console.error`, `pageerror`, failed same-origin requests, and same-origin responses with status 400 or higher.
 - Exercised the required dynamic states separately and compared the deployed homepage, three core profiles, graph, media, and an unknown route against the local production build.
-- Browser evidence is stored locally under `.superpowers/sdd/2026-08-27-v1-quality-audit/visual-evidence/` and remains ignored. No screenshot or local path is committed.
+- Browser screenshots were retained as ignored local audit evidence and are not part of the repository; the portable observations are recorded below.
 
 ## Finding summary
 
@@ -25,7 +25,7 @@ Audit revision: `c8d71a5294d8d34621d2901e298fafc375f51cbb` on `audit/v1-quality-
 - Reproduction: Open a fresh browser context directly at `https://gauntwheelcake.github.io/shu-scientist-museum/scientists/qian-weichang`; wait for the Pages fallback and application bootstrap to finish. Repeat for the other listed routes without first navigating through the homepage.
 - Expected: The URL and rendered route agree: the three profiles expose their respective H1, `/graph` exposes `科学家图谱`, `/media` exposes `影音档案`, and an unknown route exposes `页面未找到`.
 - Actual: The final URL correctly returns to the requested repository-prefixed path, but the rendered H1 remains the homepage H1 `追寻前辈榜样，筑梦科技自立自强`. The unknown route also renders the homepage instead of the application 404. Client-side navigation from an already loaded homepage works; the defect is limited to fresh deployed deep-link entry.
-- Screenshot evidence: `.superpowers/sdd/2026-08-27-v1-quality-audit/visual-evidence/vp-001-deployed-deep-link-home-390.png`; `.superpowers/sdd/2026-08-27-v1-quality-audit/visual-evidence/vp-001-deployed-deep-link-home-1440.png`
+- Screenshot evidence: retained outside the repository at 390px and 1440px; the observed URL, H1, network and storage behavior is recorded below.
 - DOM/network/console evidence: The initial deep-link document returns HTTP 404 as expected for the GitHub Pages fallback and logs that 404. After fallback processing, Playwright observes the requested final URL but the homepage title/H1/body. `sessionStorage` has already been consumed. The local production preview returns HTTP 200 and the correct H1 before and after refresh, so this is deployment-only. This is distinct from CL-001: CL-001 covers storage APIs throwing, while VP-001 reproduces with normal storage access.
 - Recommended smallest fix: Restore the saved Pages route before constructing the browser router, or expose a router factory that is called only after restoration. Add a Pages-fallback integration test that starts from the generated 404 document, then asserts the final URL and H1 for a profile and an unknown route.
 
@@ -36,7 +36,7 @@ Audit revision: `c8d71a5294d8d34621d2901e298fafc375f51cbb` on `audit/v1-quality-
 - Reproduction: Inspect the computed foreground of a guide index such as `.guide-card__index` against the paper surface. The same token pairing is used by the other listed index elements.
 - Expected: Normal-size text meets WCAG AA contrast of at least 4.5:1 against its surface while the bronze decorative language remains recognizable.
 - Actual: The foreground is `rgb(166, 132, 82)` (`#a68452`) and the paper background is `rgb(243, 239, 231)` (`#f3efe7`), producing approximately 3.03:1. Font sizes are 14–16px, so the 3:1 large-text exception does not apply. The values and visibility are invariant across the five widths.
-- Screenshot evidence: `.superpowers/sdd/2026-08-27-v1-quality-audit/visual-evidence/vp-002-bronze-index-contrast-1440.png`
+- Screenshot evidence: retained outside the repository at 1440px; the computed foreground, background and ratio are recorded below.
 - DOM/network/console evidence: Computed-style sampling found the same failing pair on all six homepage guide indices, the core-profile `research-chapters__number` elements, four footprint indices, and four about-page chain indices. The route matrix found no clipping or overflow around these elements; contrast is the isolated defect.
 - Recommended smallest fix: Keep `--color-bronze` for borders, lines, and large decoration, introduce a darker bronze text token that reaches 4.5:1 on both paper surfaces, and apply it only to the affected small index selectors. Add a computed-color contrast assertion for the shared text token.
 
@@ -47,7 +47,7 @@ Audit revision: `c8d71a5294d8d34621d2901e298fafc375f51cbb` on `audit/v1-quality-
 - Reproduction: Open `/about` and inspect the first paragraph inside `.about-page__positioning`.
 - Expected: The 12px section label uses the intended light archive color on the dark positioning panel and meets 4.5:1.
 - Actual: The label computes to `rgb(143, 29, 34)` on `rgb(23, 23, 23)`, approximately 2.02:1. The more specific earlier selector `.about-page > article > p:first-child` wins over the later intended `.about-page__positioning > p:first-child` rule.
-- Screenshot evidence: `.superpowers/sdd/2026-08-27-v1-quality-audit/visual-evidence/vp-003-about-label-contrast-1440.png`
+- Screenshot evidence: retained outside the repository at 1440px; the computed foreground, background and ratio are recorded below.
 - DOM/network/console evidence: The label is visible and unclipped at every required width, but computed foreground/background colors remain the failing pair. No console or network error accompanies the defect.
 - Recommended smallest fix: Give the positioning label a dedicated class or an equally specific rule and set it to the existing archive/light token; add a focused CSS computed-style test so selector order cannot restore the red-on-black pair.
 
@@ -102,7 +102,7 @@ The detached-line screenshot supplied by the user predates deployed SHA `9da9b58
 - local and deployed DOM bounding boxes place every line inside the graph preview (`outsideLines=0`);
 - the current local and deployed screenshots show all three edges connected to the three circles.
 
-Representative pass evidence: `.superpowers/sdd/2026-08-27-v1-quality-audit/visual-evidence/pass-local-home-graph-1440.png` and `.superpowers/sdd/2026-08-27-v1-quality-audit/visual-evidence/pass-deployed-home-graph-1440-waited.png`.
+Representative local and deployed pass screenshots were retained outside the repository; their measured three-edge/three-node result is recorded above.
 
 This screenshot is therefore classified as stale/cache-related evidence, not a current VP defect. If it appears again after the next deployment, capture the page URL, hard-refresh result, loaded JavaScript/CSS asset hashes, and browser zoom before reopening the finding.
 
