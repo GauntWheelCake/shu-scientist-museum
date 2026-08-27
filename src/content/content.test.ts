@@ -203,6 +203,33 @@ describe('museum content', () => {
     ).toBe(true);
   });
 
+  it('keeps extended scientist profiles within their sourced claims', () => {
+    expect(
+      Object.fromEntries(scientists.map((item) => [item.id, item])),
+    ).toMatchObject({
+      'scientist-sun-jinliang': {
+        years: '1946年生',
+        summary:
+          '长期从事碳/碳复合材料、特种纤维及特种纺织材料研究，相关成果应用于劳动防护、航空、航天等领域。',
+        spiritIds: ['spirit-innovation'],
+      },
+      'scientist-yang-xiongli': {
+        years: '1941年生',
+        spiritIds: ['spirit-innovation', 'spirit-truth-seeking'],
+      },
+      'scientist-xie-shaorong': {
+        summary:
+          '带领团队深耕海洋智能无人艇，研制“精海”系列无人艇并开展无人艇集群研究。',
+      },
+      'scientist-yue-xiaodong': {
+        summary:
+          '从事人工智能理论与应用研究，研究方向为机器学习、软计算与决策支持系统。',
+        fields: ['机器学习', '软计算', '决策支持系统'],
+        spiritIds: ['spirit-innovation', 'spirit-truth-seeking'],
+      },
+    });
+  });
+
   it('keeps only sourced Li Sanli research claims', () => {
     const li = scientists.find(({ id }) => id === 'scientist-li-sanli')!;
     const chapter724 = li.chapters.find(
