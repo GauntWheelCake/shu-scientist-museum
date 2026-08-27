@@ -22,7 +22,6 @@ describe('built GitHub Pages fallback', () => {
         await build({
           build: { outDir },
           configFile: resolve('vite.config.ts'),
-          configLoader: 'runner',
           logLevel: 'silent',
         });
       } finally {
