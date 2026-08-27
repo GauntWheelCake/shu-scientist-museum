@@ -211,12 +211,25 @@ export function Home(): JSX.Element {
             </div>
           </Reveal>
           <div className="graph-preview" aria-hidden="true">
-            <span className="graph-preview__node graph-preview__node--person">人物</span>
-            <span className="graph-preview__node graph-preview__node--event">事件</span>
-            <span className="graph-preview__node graph-preview__node--spirit">精神</span>
-            <span className="graph-preview__axis graph-preview__axis--one" />
-            <span className="graph-preview__axis graph-preview__axis--two" />
-            <span className="graph-preview__axis graph-preview__axis--three" />
+            <svg viewBox="0 0 640 384" focusable="false">
+              <g className="graph-preview__edges">
+                <line data-from="person" data-to="event" x1="120" y1="104" x2="520" y2="168" />
+                <line data-from="person" data-to="spirit" x1="120" y1="104" x2="408" y2="296" />
+                <line data-from="event" data-to="spirit" x1="520" y1="168" x2="408" y2="296" />
+              </g>
+              <g className="graph-preview__node graph-preview__node--person">
+                <circle data-graph-node="person" cx="120" cy="104" r="48" />
+                <text x="120" y="104">人物</text>
+              </g>
+              <g className="graph-preview__node graph-preview__node--event">
+                <circle data-graph-node="event" cx="520" cy="168" r="48" />
+                <text x="520" y="168">事件</text>
+              </g>
+              <g className="graph-preview__node graph-preview__node--spirit">
+                <circle data-graph-node="spirit" cx="408" cy="296" r="48" />
+                <text x="408" y="296">精神</text>
+              </g>
+            </svg>
           </div>
         </div>
       </section>
