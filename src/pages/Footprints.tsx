@@ -26,7 +26,10 @@ export function Footprints(): JSX.Element {
   useDocumentTitle(getPageMeta('/footprints'));
   const [selectedType, setSelectedType] = useState<'all' | ActivityType>('all');
   const displayedActivities = useMemo(
-    () => activities.filter((activity) => selectedType === 'all' || activity.type === selectedType),
+    () =>
+      activities.filter(
+        (activity) => selectedType === 'all' || activity.type === selectedType,
+      ),
     [selectedType],
   );
   const completedParticipants = activities
@@ -58,7 +61,11 @@ export function Footprints(): JSX.Element {
           </dl>
         </div>
 
-        <div className="footprints-filter" role="group" aria-label="实践路线筛选">
+        <div
+          className="footprints-filter"
+          role="group"
+          aria-label="实践路线筛选"
+        >
           {activityFilters.map((filter) => (
             <button
               key={filter.id}
@@ -83,21 +90,27 @@ export function Footprints(): JSX.Element {
         <div className="activity-card-grid">
           {displayedActivities.map((activity) => {
             const relatedScientists = activity.scientistIds
-              .map((scientistId) => scientists.find((scientist) => scientist.id === scientistId)?.name)
+              .map(
+                (scientistId) =>
+                  scientists.find((scientist) => scientist.id === scientistId)
+                    ?.name,
+              )
               .filter((name): name is string => Boolean(name));
 
             return (
               <article key={activity.id} className="activity-card">
                 <ResilientImage
                   className="activity-card__image"
-                  src={activity.image.src}
-                  alt={activity.image.alt}
+                  src={activity.image?.src}
+                  alt={activity.image?.alt ?? activity.title}
                   fallbackLabel={activity.title}
                 />
                 <div className="activity-card__content">
                   <div className="activity-card__meta">
                     <span>{activityTypeLabels[activity.type]}</span>
-                    <span>{activity.status === 'completed' ? '已完成' : '计划中'}</span>
+                    <span>
+                      {activity.status === 'completed' ? '已完成' : '计划中'}
+                    </span>
                   </div>
                   <h3>{activity.title}</h3>
                   <p>{activity.description}</p>

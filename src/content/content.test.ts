@@ -123,7 +123,8 @@ describe('validateContent', () => {
       activities: [
         {
           ...activities[0],
-          image: undefined as never,
+          status: 'completed',
+          image: undefined,
         },
       ],
       media: [{ ...media[0], description: '' }],
@@ -140,36 +141,38 @@ describe('validateContent', () => {
     );
   });
 
-  it.each(['javascript:alert(1)', 'data:text/plain,unsafe', 'http://example.com/video', 'not a url'])(
-    'rejects a published media URL that is not valid https: %s',
-    (url) => {
-      const invalidDataset: ContentDataset = {
-        scientists,
-        stories,
-        events,
-        archives,
-        activities,
-        media: [
-          {
-            ...media[0],
-            status: 'published',
-            platform: '示例平台',
-            url,
-          },
-        ],
-        spiritThemes,
-      };
+  it.each([
+    'javascript:alert(1)',
+    'data:text/plain,unsafe',
+    'http://example.com/video',
+    'not a url',
+  ])('rejects a published media URL that is not valid https: %s', (url) => {
+    const invalidDataset: ContentDataset = {
+      scientists,
+      stories,
+      events,
+      archives,
+      activities,
+      media: [
+        {
+          ...media[0],
+          status: 'published',
+          platform: '示例平台',
+          url,
+        },
+      ],
+      spiritThemes,
+    };
 
-      expect(validateContent(invalidDataset)).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            code: 'PUBLISHED_MEDIA_INVALID_URL',
-            path: 'media[0].url',
-          }),
-        ]),
-      );
-    },
-  );
+    expect(validateContent(invalidDataset)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'PUBLISHED_MEDIA_INVALID_URL',
+          path: 'media[0].url',
+        }),
+      ]),
+    );
+  });
 });
 
 describe('museum content', () => {
@@ -276,9 +279,7 @@ describe('museum content', () => {
   });
 
   it('uses conflict-safe award and return copy for Qian Weichang', () => {
-    const qian = scientists.find(
-      ({ id }) => id === 'scientist-qian-weichang',
-    )!;
+    const qian = scientists.find(({ id }) => id === 'scientist-qian-weichang')!;
     const awardChapter = qian.chapters.find(
       ({ id }) => id === 'chapter-qian-circular-plate-perturbation',
     )!;
@@ -354,7 +355,7 @@ describe('museum content', () => {
     expect(chapterText).not.toMatch(/转向物理|教育改革|校长任职/);
   });
 
-  it('provides display and source metadata for archives and four activity filters', () => {
+  it('provides display metadata for archives and keeps planned activities honest', () => {
     expect(
       archives.every(({ image, sourceId, year }) =>
         image.endsWith(`/${sourceId}-${year}.webp`),
@@ -367,22 +368,77 @@ describe('museum content', () => {
       'military',
     ]);
     expect(
-      activities.every(
-        ({ image }) =>
-          image.src.length > 0 &&
-          image.alt.length > 0 &&
-          image.sourceId.length > 0,
+      activities.map(
+        ({
+          id,
+          dateLabel,
+          location,
+          description,
+          status,
+          participantCount,
+          image,
+        }) => ({
+          id,
+          dateLabel,
+          location,
+          description,
+          status,
+          participantCount,
+          image,
+        }),
       ),
-    ).toBe(true);
+    ).toEqual([
+      {
+        id: 'activity-branch-outreach-2026',
+        dateLabel: '时间待重新确认（原计划2026年7月）',
+        location: '计划地点：上海大学宝山校区',
+        description:
+          '原计划将科学家事迹整理为微党课、微团课，在党团支部开展宣讲；具体场次人数尚待核验。',
+        status: 'planned',
+        participantCount: 0,
+        image: undefined,
+      },
+      {
+        id: 'activity-school-outreach-2026',
+        dateLabel: '时间待重新确认（原计划2026年7月）',
+        location: '计划地点：上海大学附属小学等学校',
+        description:
+          '原计划面向九年义务教育阶段学校开展科学家精神宣讲；具体场次人数尚待核验。',
+        status: 'planned',
+        participantCount: 0,
+        image: undefined,
+      },
+      {
+        id: 'activity-community-outreach-2026',
+        dateLabel: '时间待重新确认（原计划2026年7月）',
+        location: '计划地点：宝山区友谊路街道、普陀区真如街道',
+        description:
+          '原计划在爱心暑托班、助老服务课等场合开展宣讲；具体场次人数尚待核验。',
+        status: 'planned',
+        participantCount: 0,
+        image: undefined,
+      },
+      {
+        id: 'activity-military-outreach-2026',
+        dateLabel: '时间待重新确认（原计划2026年7月）',
+        location: '计划地点：南京路上好八连事迹纪念馆等',
+        description: '原计划面向部队开展科学家精神宣讲；具体场次人数尚待核验。',
+        status: 'planned',
+        participantCount: 0,
+        image: undefined,
+      },
+    ]);
     expect(
-      activities.every(({ image }) =>
-        /^\/images\/activities\/\d{4}-\d{2}-\d{2}-[a-z0-9-]+-\d+\.webp$/.test(
-          image.src,
-        ),
-      ),
-    ).toBe(true);
-    expect(media.every(({ description }) => description.length > 0)).toBe(
-      true,
-    );
+      validateContent({
+        scientists,
+        stories,
+        events,
+        archives,
+        activities,
+        media,
+        spiritThemes,
+      }),
+    ).toEqual([]);
+    expect(media.every(({ description }) => description.length > 0)).toBe(true);
   });
 });

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Footprints } from './Footprints';
@@ -28,15 +28,20 @@ describe('Footprints', () => {
     for (const routeCase of routeCases) {
       await user.click(screen.getByRole('button', { name: routeCase.label }));
 
-      expect(screen.getByRole('button', { name: routeCase.label })).toHaveAttribute(
-        'aria-pressed',
-        'true',
-      );
-      expect(screen.getByRole('heading', { name: routeCase.title })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: routeCase.label }),
+      ).toHaveAttribute('aria-pressed', 'true');
+      expect(
+        screen.getByRole('heading', { name: routeCase.title }),
+      ).toBeInTheDocument();
       expect(screen.getAllByRole('article')).toHaveLength(1);
 
-      for (const otherRoute of routeCases.filter((item) => item.label !== routeCase.label)) {
-        expect(screen.queryByRole('heading', { name: otherRoute.title })).not.toBeInTheDocument();
+      for (const otherRoute of routeCases.filter(
+        (item) => item.label !== routeCase.label,
+      )) {
+        expect(
+          screen.queryByRole('heading', { name: otherRoute.title }),
+        ).not.toBeInTheDocument();
       }
     }
   });
@@ -53,17 +58,22 @@ describe('Footprints', () => {
     expect(screen.queryByText(/已覆盖\s*0\s*人/)).not.toBeInTheDocument();
   });
 
-  it('replaces a failed activity image with an honest fallback', () => {
+  it('shows four honest fallbacks immediately when planned activities have no images', () => {
     render(
       <MemoryRouter>
         <Footprints />
       </MemoryRouter>,
     );
 
-    const image = screen.getByRole('img', { name: '科学家精神进支部计划示意图' });
-    fireEvent.error(image);
-
-    expect(screen.queryByRole('img', { name: '科学家精神进支部计划示意图' })).not.toBeInTheDocument();
-    expect(screen.getByRole('img', { name: '科学家精神进支部计划示意图暂缺' })).toBeVisible();
+    expect(screen.getAllByRole('img')).toHaveLength(4);
+    expect(document.querySelectorAll('.activity-card img')).toHaveLength(0);
+    for (const title of [
+      '科学家精神进支部（计划）',
+      '科学家精神进校园（计划）',
+      '科学家精神进社区（计划）',
+      '科学家精神进军营（计划）',
+    ]) {
+      expect(screen.getByRole('img', { name: `${title}暂缺` })).toBeVisible();
+    }
   });
 });

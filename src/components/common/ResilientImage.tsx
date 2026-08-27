@@ -2,7 +2,7 @@ import { useState, type JSX } from 'react';
 import { withBasePath } from '../../app/publicAsset';
 
 type ResilientImageProps = {
-  src: string;
+  src?: string;
   alt: string;
   fallbackLabel: string;
   className?: string;
@@ -10,7 +10,7 @@ type ResilientImageProps = {
 };
 
 export function ResilientImage(props: ResilientImageProps): JSX.Element {
-  return <SourceImage key={props.src} {...props} />;
+  return <SourceImage key={props.src ?? 'missing'} {...props} />;
 }
 
 function SourceImage({
@@ -22,10 +22,14 @@ function SourceImage({
 }: ResilientImageProps): JSX.Element {
   const [failed, setFailed] = useState(false);
 
-  if (failed) {
+  if (!src || failed) {
     return (
       <span
-        className={className ? `${className} resilient-image--fallback` : 'resilient-image--fallback'}
+        className={
+          className
+            ? `${className} resilient-image--fallback`
+            : 'resilient-image--fallback'
+        }
         role="img"
         aria-label={`${alt}暂缺`}
       >
