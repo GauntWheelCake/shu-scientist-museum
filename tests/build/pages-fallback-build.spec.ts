@@ -22,6 +22,7 @@ describe('built GitHub Pages fallback', () => {
         await build({
           build: { outDir },
           configFile: resolve('vite.config.ts'),
+          configLoader: 'runner',
           logLevel: 'silent',
         });
       } finally {
@@ -30,8 +31,17 @@ describe('built GitHub Pages fallback', () => {
       }
 
       const fallback = readFileSync(resolve(outDir, '404.html'), 'utf8');
+      const index = readFileSync(resolve(outDir, 'index.html'), 'utf8');
       const declaredBase = fallback.match(/const basePath = (["'])(.*?)\1;/)?.[2];
       expect(declaredBase).toBe(basePath);
+
+      const ogImage = index.match(
+        /<meta\s+property="og:image"\s+content="([^"]+)"\s*\/>/,
+      )?.[1];
+      expect(ogImage).toBe(`${basePath}og-cover.svg`);
+      if (basePath !== '/') {
+        expect(index).not.toContain('content="/og-cover.svg"');
+      }
 
       const script = fallback.match(/<script>([\s\S]*?)<\/script>/)?.[1];
       const stored = new Map<string, string>();

@@ -133,3 +133,29 @@ it('cancels its animation frame and disconnects its observer when unmounted', ()
   expect(cancelFrame).toHaveBeenCalledWith(27);
   expect(disconnect).toHaveBeenCalledTimes(1);
 });
+
+it('disconnects without starting an animation when unmounted before intersection', () => {
+  installMotionPreference(false);
+  const requestFrame = vi.fn(() => 31);
+  const disconnect = vi.fn();
+
+  vi.stubGlobal('requestAnimationFrame', requestFrame);
+  vi.stubGlobal(
+    'IntersectionObserver',
+    vi.fn(() => ({
+      disconnect,
+      observe: vi.fn(),
+      takeRecords: () => [],
+      unobserve: vi.fn(),
+      root: null,
+      rootMargin: '0px',
+      thresholds: [0],
+    })),
+  );
+
+  const { unmount } = render(<CountUp value={9} />);
+  unmount();
+
+  expect(disconnect).toHaveBeenCalledTimes(1);
+  expect(requestFrame).not.toHaveBeenCalled();
+});
