@@ -33,6 +33,8 @@ function guardRuntimeErrors(page: Page): string[] {
 }
 
 test('all museum pages avoid horizontal overflow at five acceptance widths', async ({ page }) => {
+  // This matrix performs 60 real navigations.
+  test.slow();
   const runtimeErrors = guardRuntimeErrors(page);
 
   for (const width of widths) {
