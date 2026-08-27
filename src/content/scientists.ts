@@ -35,8 +35,7 @@ export const scientists: Scientist[] = [
           '受均匀压力的固定薄圆板存在大挠度求解难题。',
         action:
           '1947年，他以中心挠度为摄动参数导出摄动解，形成国际上所称的“钱伟长方法”。',
-        significance:
-          '相关工作被国外学者广泛引用，并于1955年获中国科学院颁发的国家科学奖二等奖。',
+        significance: '相关工作获中国科学院国家科学奖二等奖。',
       },
       {
         id: 'chapter-qian-aerospace-singular-perturbation',

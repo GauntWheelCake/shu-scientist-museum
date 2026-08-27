@@ -5,7 +5,7 @@ export const events: TimelineEvent[] = [
     id: 'event-qian-return-1946',
     dateLabel: '1946年5月',
     title: '钱伟长回国任教',
-    description: '钱伟长从洛杉矶乘船回国，随后回到清华大学任教。',
+    description: '1946年5月，钱伟长回国，随后任清华大学教授。',
     scientistIds: ['scientist-qian-weichang'],
     spiritIds: ['spirit-patriotism', 'spirit-education'],
   },

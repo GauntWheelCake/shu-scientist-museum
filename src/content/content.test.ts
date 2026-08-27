@@ -207,6 +207,28 @@ describe('museum content', () => {
     expect(JSON.stringify(scientists)).not.toMatch(/2\.(?:15|35)万亿次/);
   });
 
+  it('uses conflict-safe award and return copy for Qian Weichang', () => {
+    const qian = scientists.find(
+      ({ id }) => id === 'scientist-qian-weichang',
+    )!;
+    const awardChapter = qian.chapters.find(
+      ({ id }) => id === 'chapter-qian-circular-plate-perturbation',
+    )!;
+    const returnEvent = events.find(
+      ({ id }) => id === 'event-qian-return-1946',
+    )!;
+
+    expect(awardChapter.significance).toBe(
+      '相关工作获中国科学院国家科学奖二等奖。',
+    );
+    expect(returnEvent.description).toBe(
+      '1946年5月，钱伟长回国，随后任清华大学教授。',
+    );
+    expect(JSON.stringify([awardChapter, returnEvent])).not.toMatch(
+      /1955年|洛杉矶|乘船/,
+    );
+  });
+
   it('uses research work rather than study or administration for Qian Weichang chapters', () => {
     const qianWeichang = scientists.find(
       ({ id }) => id === 'scientist-qian-weichang',
