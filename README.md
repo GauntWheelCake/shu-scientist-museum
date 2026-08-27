@@ -9,7 +9,7 @@
 
 ## 技术栈与环境
 
-- React 19、TypeScript、React Router、Motion
+- React 19、TypeScript、React Router、CSS 动效
 - Vite 7、Vitest、Testing Library、Playwright
 - Node.js `>=22.12 <25`（仓库 `.nvmrc` 指定 22）
 
