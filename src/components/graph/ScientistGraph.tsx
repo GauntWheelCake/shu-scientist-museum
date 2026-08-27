@@ -205,6 +205,7 @@ export function ScientistGraph({
               <g className="scientist-graph__themes">
                 {themes.map((theme) => {
                   const y = themePositions.get(theme.id) ?? 0;
+                  const titleLines = theme.title.split('、');
                   const isSelected =
                     selectedNode?.kind === 'theme' &&
                     selectedNode.id === theme.id;
@@ -239,7 +240,21 @@ export function ScientistGraph({
                         textAnchor="middle"
                         dominantBaseline="central"
                       >
-                        {theme.title}
+                        {titleLines.map((line, index) => (
+                          <tspan
+                            key={line}
+                            x={themeX}
+                            dy={
+                              index === 0 && titleLines.length > 1
+                                ? '-0.55em'
+                                : index === 0
+                                  ? '0'
+                                  : '1.1em'
+                            }
+                          >
+                            {line}
+                          </tspan>
+                        ))}
                       </text>
                     </g>
                   );
