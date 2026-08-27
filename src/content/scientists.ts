@@ -35,8 +35,7 @@ export const scientists: Scientist[] = [
           '受均匀压力的固定薄圆板存在大挠度求解难题。',
         action:
           '1947年，他以中心挠度为摄动参数导出摄动解，形成国际上所称的“钱伟长方法”。',
-        significance:
-          '相关工作被国外学者广泛引用，并于1955年获中国科学院颁发的国家科学奖二等奖。',
+        significance: '相关工作获中国科学院国家科学奖二等奖。',
       },
       {
         id: 'chapter-qian-aerospace-singular-perturbation',
@@ -54,7 +53,7 @@ export const scientists: Scientist[] = [
     id: 'scientist-li-sanli',
     slug: 'li-sanli',
     name: '李三立',
-    years: '2022年逝世',
+    years: '1935—2022',
     identity: '中国工程院院士，高性能计算领域先驱',
     summary:
       '从电子管计算机到集群式高性能计算机，他持续参与并推动中国计算机事业的发展。',
@@ -69,24 +68,12 @@ export const scientists: Scientist[] = [
     featured: true,
     chapters: [
       {
-        id: 'chapter-li-rescue-911',
-        title: '抢救911电子管计算机',
-        problem:
-          '1961年接手时，911机插件没有测试档案，控制信号不稳，并存在大量焊接问题。',
-        action:
-          '他组织学生逐个测量插件、建立档案，并请焊接师傅排查出两百多处虚焊。',
-        significance:
-          '911机于1964年研制成功并投入运行，为后续通用计算机研发奠定基础。',
-      },
-      {
         id: 'chapter-li-develop-724',
         title: '研制军用计算机724机',
-        problem:
-          '火箭发射基地需要规模大、指标高且能实时监控飞行器和卫星的专用计算机。',
-        action:
-          '他带领团队承担数百块印刷板和集成电路模块的研制与全机稳定性调试。',
+        problem: '20世纪70年代，我国高校大型计算机研制持续推进。',
+        action: '李三立曾负责研制724机。',
         significance:
-          '724机完成多项重要国防任务，成为当时高校用于尖端科研计算的大型计算机。',
+          '中国工程院记载，724机是20世纪70年代我国各大学中用于国家尖端科技规模最大的计算机。',
       },
       {
         id: 'chapter-li-ziqiang-supercomputers',
@@ -104,7 +91,7 @@ export const scientists: Scientist[] = [
     id: 'scientist-huang-hongjia',
     slug: 'huang-hongjia',
     name: '黄宏嘉',
-    years: '1924年生',
+    years: '1924—2021',
     identity: '中国科学院院士，微波与光波导学家',
     summary:
       '长期研究微波与光纤传输，完成理论奠基、实验室建设和国产单模光纤探索。',
@@ -123,9 +110,9 @@ export const scientists: Scientist[] = [
         problem:
           '当时国内微波电子学缺少系统专著，学术研究与工程应用都需要理论支撑。',
         action:
-          '他把多年学习、实验和思考整理成约百万字的《微波原理》，于1964年出版。',
+          '20世纪60年代，他把多年学习、实验和思考整理成约百万字的《微波原理》，由科学出版社出版。',
         significance:
-          '该书成为国内该领域第一本专著，被国际学界评价为“为中国人争气的书”。',
+          '该书成为国内该领域第一本专著，被国际学界称为一本“为中国人争气的书”。',
       },
       {
         id: 'chapter-huang-from-microwave-to-light',
@@ -143,19 +130,9 @@ export const scientists: Scientist[] = [
         problem:
           '单模光纤更有发展前景，但研制难度高，国内缺少实验基础。',
         action:
-          '他创建波科学研究实验室，带领团队反复试验，并曾在家中煤气灶上拉制光纤雏形。',
+          '1979年，他在上海科学技术大学创建波科学研究实验室；此后带领团队并与上海石英厂等单位合作开展单模光纤研究，研制出我国第一根单模光纤。',
         significance:
           '团队于1980年前后研制出中国的单模光纤，推动我国光纤技术应用与发展。',
-      },
-      {
-        id: 'chapter-huang-wave-plate',
-        title: '提出“黄氏波片”',
-        problem:
-          '光纤中的偏振状态会影响信号传输的质量和稳定性。',
-        action:
-          '他提出用于调控光偏振状态的波片方案，相关成果被称为“黄氏波片”。',
-        significance:
-          '该成果获得国际同行认可，成为其光纤研究的代表性贡献之一。',
       },
     ],
   },
@@ -163,16 +140,12 @@ export const scientists: Scientist[] = [
     id: 'scientist-sun-jinliang',
     slug: 'sun-jinliang',
     name: '孙晋良',
-    years: '',
+    years: '1946年生',
     identity: '中国工程院院士，复合材料专家',
     summary:
-      '长期从事碳/碳复合材料、特种纤维和产业用纺织材料研发，推动关键材料自主可控。',
+      '长期从事碳/碳复合材料、特种纤维及特种纺织材料研究，相关成果应用于劳动防护、航空、航天等领域。',
     fields: ['复合材料', '特种纤维', '产业用纺织材料'],
-    spiritIds: [
-      'spirit-patriotism',
-      'spirit-innovation',
-      'spirit-collaboration',
-    ],
+    spiritIds: ['spirit-innovation'],
     portrait: '/images/scientists/sun-jinliang.webp',
     featured: false,
     chapters: [],
@@ -199,16 +172,12 @@ export const scientists: Scientist[] = [
     id: 'scientist-yang-xiongli',
     slug: 'yang-xiongli',
     name: '杨雄里',
-    years: '1935年生',
+    years: '1941年生',
     identity: '中国科学院院士，神经生物学家',
     summary:
       '长期研究视觉神经机制，并参与推动我国脑科学与类脑研究的战略规划。',
     fields: ['神经生物学', '视觉神经机制', '脑科学'],
-    spiritIds: [
-      'spirit-innovation',
-      'spirit-truth-seeking',
-      'spirit-education',
-    ],
+    spiritIds: ['spirit-innovation', 'spirit-truth-seeking'],
     portrait: '/images/scientists/yang-xiongli.webp',
     featured: false,
     chapters: [],
@@ -220,7 +189,7 @@ export const scientists: Scientist[] = [
     years: '',
     identity: '上海大学教授，海洋智能无人艇研究者',
     summary:
-      '带领团队深耕海洋智能无人艇，形成“精海”系列产品并开展无人艇集群研究。',
+      '带领团队深耕海洋智能无人艇，研制“精海”系列无人艇并开展无人艇集群研究。',
     fields: ['海洋智能装备', '无人艇', '集群协同'],
     spiritIds: [
       'spirit-patriotism',
@@ -238,13 +207,9 @@ export const scientists: Scientist[] = [
     years: '',
     identity: '上海大学教授，人工智能与机器学习研究者',
     summary:
-      '从机器学习理论走向产学研融合，关注多模态识别、迁移学习和真实场景应用。',
-    fields: ['机器学习', '多模态识别', '人工智能应用'],
-    spiritIds: [
-      'spirit-innovation',
-      'spirit-truth-seeking',
-      'spirit-education',
-    ],
+      '从事人工智能理论与应用研究，研究方向为机器学习、软计算与决策支持系统。',
+    fields: ['机器学习', '软计算', '决策支持系统'],
+    spiritIds: ['spirit-innovation', 'spirit-truth-seeking'],
     portrait: '/images/scientists/yue-xiaodong.webp',
     featured: false,
     chapters: [],
@@ -264,7 +229,8 @@ export const stories: Story[] = [
     id: 'story-li-building-chinese-computers',
     slug: 'li-building-chinese-computers',
     title: '为祖国造“超级大脑”',
-    summary: '从排查虚焊到建设高性能计算平台，见证中国计算机从无到有。',
+    summary:
+      '从研制724机到建设“自强”高性能计算平台，持续推动我国计算机事业发展。',
     scientistIds: ['scientist-li-sanli'],
     spiritIds: ['spirit-collaboration', 'spirit-dedication'],
   },

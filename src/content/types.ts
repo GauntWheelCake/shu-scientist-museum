@@ -67,7 +67,7 @@ export type Activity = {
   participantCount: number;
   status: 'planned' | 'completed';
   type: ActivityType;
-  image: SourcedImage;
+  image?: SourcedImage;
   scientistIds: string[];
   spiritIds: string[];
 };

@@ -6,11 +6,11 @@ type StoredRoute = {
   hash?: string;
 };
 
-type RouteStorage = Pick<Storage, 'getItem' | 'removeItem'>;
+export type RouteStorage = Pick<Storage, 'getItem' | 'removeItem'>;
 
 type RestorePagesRouteOptions = {
   baseUrl: string;
-  storage: RouteStorage;
+  storage?: RouteStorage;
   replace: (url: string) => void;
 };
 
@@ -21,11 +21,32 @@ const isSafeRoute = (route: StoredRoute) =>
   (!route.search || route.search.startsWith('?')) &&
   (!route.hash || route.hash.startsWith('#'));
 
+export function getPagesRouteStorage(
+  source: Pick<Window, 'sessionStorage'>,
+): RouteStorage | undefined {
+  try {
+    return source.sessionStorage;
+  } catch {
+    return undefined;
+  }
+}
+
 export function restorePagesRoute({ baseUrl, storage, replace }: RestorePagesRouteOptions) {
-  const savedRoute = storage.getItem(pagesRouteStorageKey);
+  if (!storage) return;
+
+  let savedRoute: string | null;
+  try {
+    savedRoute = storage.getItem(pagesRouteStorageKey);
+  } catch {
+    return;
+  }
   if (!savedRoute) return;
 
-  storage.removeItem(pagesRouteStorageKey);
+  try {
+    storage.removeItem(pagesRouteStorageKey);
+  } catch {
+    // Cleanup denial must not prevent restoration of an otherwise valid route.
+  }
 
   try {
     const route = JSON.parse(savedRoute) as StoredRoute;

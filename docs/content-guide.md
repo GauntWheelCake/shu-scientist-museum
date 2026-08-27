@@ -58,29 +58,24 @@
 
 ## 新增活动
 
-在 `src/content/activities.ts` 中加入完整记录。图片名必须严格为 `/images/activities/<yyyy-mm-dd>-<place>-<index>.webp`：
+在 `src/content/activities.ts` 中加入记录。计划活动没有已核验图片时省略 `image`，页面会直接显示可访问的降级内容：
 
 ```ts
 {
   id: 'activity-example-campus-2026',
   title: '校园宣讲（计划）',
-  dateLabel: '2026年8月（计划）',
-  location: '待核实的具体地点',
-  description: '计划开展的内容；不写未发生的成效。',
+  dateLabel: '时间待重新确认（原计划2026年8月）',
+  location: '计划地点：待核实的具体地点',
+  description: '原计划开展的内容；不写未发生的成效。',
   participantCount: 0,
   status: 'planned',
   type: 'school',
-  image: {
-    src: '/images/activities/2026-08-01-example-campus-01.webp',
-    alt: '校园宣讲现场的客观画面说明',
-    sourceId: 'source-example-campus-2026-08-01',
-  },
   scientistIds: ['scientist-example-name'],
   spiritIds: ['spirit-education'],
 }
 ```
 
-只有活动实际完成且日期、地点、人数和图片均已核实后，才可改为 `completed`。计划活动没有真实现场图时保留降级展示，不使用往期或其他地点照片代替。
+计划活动没有已核验图片时必须省略 `image`，保留页面的降级展示，不使用往期、其他地点或生成图片代替。只有活动实际完成且日期、地点、人数和图片均已核实后，才可改为 `completed`；已完成活动必须提供图片，并按下文规则登记真实来源。
 
 ## 新增影音
 

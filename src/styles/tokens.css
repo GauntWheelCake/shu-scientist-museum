@@ -10,6 +10,7 @@
   --color-ink-muted: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
   --color-archive: #d5c5a6;
   --color-bronze: #a68452;
+  --color-bronze-text: #765a31;
   --color-line: rgb(23 23 23 / 14%);
   --color-overlay: rgb(23 23 23 / 64%);
 

@@ -1,9 +1,18 @@
 // @ts-expect-error -- Node types are intentionally not global in the browser application.
 import { readFileSync } from 'node:fs';
 
-const allowedPalette = ['#171717', '#8f1d22', '#a68452', '#c52a2f', '#d5c5a6', '#f3efe7'];
+const allowedPalette = [
+  '#171717',
+  '#765a31',
+  '#8f1d22',
+  '#a68452',
+  '#c52a2f',
+  '#d5c5a6',
+  '#f3efe7',
+];
 const allowedRgbChannels = [
   '23 23 23',
+  '118 90 49',
   '143 29 34',
   '166 132 82',
   '197 42 47',
@@ -21,7 +30,26 @@ function readStylesheets(): string {
   return stylesheetFiles.map(readStylesheet).join('\n');
 }
 
-it('keeps every stylesheet hex color within the approved six-color palette', () => {
+function relativeLuminance(hex: string): number {
+  const channels = hex
+    .slice(1)
+    .match(/.{2}/g)!
+    .map((channel) => Number.parseInt(channel, 16) / 255)
+    .map((channel) =>
+      channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
+    );
+
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+}
+
+function contrastRatio(foreground: string, background: string): number {
+  const lighter = Math.max(relativeLuminance(foreground), relativeLuminance(background));
+  const darker = Math.min(relativeLuminance(foreground), relativeLuminance(background));
+
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+it('keeps every stylesheet hex color within the approved palette', () => {
   const styles = readStylesheets();
   const colors = [...new Set(styles.match(/#[0-9a-f]{6}\b/gi)?.map((color) => color.toLowerCase()))]
     .sort();
@@ -29,7 +57,7 @@ it('keeps every stylesheet hex color within the approved six-color palette', () 
   expect(colors).toEqual(allowedPalette);
 });
 
-it('keeps every rgb color within the approved six-color palette', () => {
+it('keeps every rgb color within the approved palette', () => {
   const styles = readStylesheets();
   const rgbChannels = [
     ...new Set([...styles.matchAll(/rgb\(\s*(\d+\s+\d+\s+\d+)/gi)].map((match) => match[1])),
@@ -39,6 +67,13 @@ it('keeps every rgb color within the approved six-color palette', () => {
   );
 
   expect(unexpectedRgbChannels).toEqual([]);
+});
+
+it('defines an approved bronze text token with AA contrast on paper', () => {
+  const tokens = readStylesheet('tokens.css');
+
+  expect(tokens).toContain('--color-bronze-text: #765a31');
+  expect(contrastRatio('#765a31', '#f3efe7')).toBeGreaterThanOrEqual(4.5);
 });
 
 it('keeps spacing declarations deterministic and on the eight-pixel grid', () => {

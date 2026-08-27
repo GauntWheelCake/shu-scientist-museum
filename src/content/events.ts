@@ -5,24 +5,16 @@ export const events: TimelineEvent[] = [
     id: 'event-qian-return-1946',
     dateLabel: '1946年5月',
     title: '钱伟长回国任教',
-    description: '钱伟长从洛杉矶乘船回国，随后回到清华大学任教。',
+    description: '1946年5月，钱伟长回国，随后任清华大学教授。',
     scientistIds: ['scientist-qian-weichang'],
     spiritIds: ['spirit-patriotism', 'spirit-education'],
   },
   {
-    id: 'event-li-911-1964',
-    dateLabel: '1964年3月',
-    title: '911电子管计算机投入运行',
-    description:
-      '经系统排查和调试，快速通用电子数字计算机911机在清华大学研制成功并投入运行。',
-    scientistIds: ['scientist-li-sanli'],
-    spiritIds: ['spirit-truth-seeking', 'spirit-collaboration'],
-  },
-  {
     id: 'event-huang-microwave-1964',
-    dateLabel: '1964年',
+    dateLabel: '20世纪60年代',
     title: '《微波原理》出版',
-    description: '黄宏嘉编写的《微波原理》由科学出版社出版。',
+    description:
+      '约百万字的《微波原理》由科学出版社出版，成为国内该领域第一本专著。',
     scientistIds: ['scientist-huang-hongjia'],
     spiritIds: ['spirit-truth-seeking', 'spirit-dedication'],
   },

@@ -67,6 +67,26 @@ describe('built GitHub Pages fallback', () => {
         search: '?from=archive',
         hash: '#chapter',
       });
+
+      redirectedTo = '';
+      expect(() =>
+        Function('window', script!)({
+          location: {
+            pathname: deepPath,
+            search: '',
+            hash: '',
+            replace: (value: string) => {
+              redirectedTo = value;
+            },
+          },
+          sessionStorage: {
+            setItem: () => {
+              throw new DOMException('Access denied', 'SecurityError');
+            },
+          },
+        }),
+      ).not.toThrow();
+      expect(redirectedTo).toBe(basePath);
     },
     30_000,
   );

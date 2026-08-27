@@ -15,11 +15,16 @@
           ? `/${pathname.slice(basePath.length).replace(/^\/+/, '')}`
           : '/';
 
-        window.sessionStorage.setItem(
-          'museum:pages-route',
-          JSON.stringify({ pathname: relativePath, search, hash }),
-        );
-        window.location.replace(basePath);
+        try {
+          window.sessionStorage.setItem(
+            'museum:pages-route',
+            JSON.stringify({ pathname: relativePath, search, hash }),
+          );
+        } catch {
+          // Storage can be denied; the base navigation must still continue.
+        } finally {
+          window.location.replace(basePath);
+        }
       })();
     </script>
   </body>

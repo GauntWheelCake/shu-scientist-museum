@@ -627,7 +627,7 @@
 }
 
 .guide-card__index {
-  color: var(--color-bronze);
+  color: var(--color-bronze-text);
   font-family: var(--font-display);
   font-size: var(--font-size-sm);
 }
@@ -1386,7 +1386,7 @@
 }
 
 .research-chapters__number {
-  color: var(--color-bronze);
+  color: var(--color-bronze-text);
   font-family: var(--font-display);
 }
 
@@ -2208,7 +2208,7 @@
 
 .footprints-page__heading > div > p,
 .media-page__heading > p,
-.about-page > article > p:first-child,
+.about-page__positioning > .about-page__positioning-label,
 .about-page__chain p,
 .about-page__team > p {
   margin-bottom: var(--space-1);
@@ -2290,7 +2290,7 @@
 }
 
 .footprints-index span {
-  color: var(--color-bronze);
+  color: var(--color-bronze-text);
   font-family: var(--font-display);
 }
 
@@ -2420,7 +2420,7 @@
   color: color-mix(in srgb, var(--color-paper-raised) 72%, transparent);
 }
 
-.about-page__positioning > p:first-child {
+.about-page__positioning > .about-page__positioning-label {
   color: var(--color-archive);
 }
 
@@ -2451,7 +2451,7 @@
 }
 
 .about-page__chain li span {
-  color: var(--color-bronze);
+  color: var(--color-bronze-text);
   font-family: var(--font-display);
 }
 

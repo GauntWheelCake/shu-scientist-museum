@@ -11,19 +11,18 @@ const CORE_SCIENTISTS = [
   'scientist-huang-hongjia',
 ] as const;
 
-const ACTIVITY_TYPES = new Set([
-  'branch',
-  'school',
-  'community',
-  'military',
-]);
+const ACTIVITY_TYPES = new Set(['branch', 'school', 'community', 'military']);
 const SOURCE_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const issue = (
   code: ValidationIssueCode,
   path: string,
   message: string,
-): ValidationIssue => ({ code, path, message });
+): ValidationIssue => ({
+  code,
+  path,
+  message,
+});
 
 export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
   const issues: ValidationIssue[] = [];
@@ -101,9 +100,7 @@ export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
   });
 
   const featuredScientistIds = new Set(
-    dataset.scientists
-      .filter(({ featured }) => featured)
-      .map(({ id }) => id),
+    dataset.scientists.filter(({ featured }) => featured).map(({ id }) => id),
   );
   CORE_SCIENTISTS.forEach((scientistId) => {
     if (!featuredScientistIds.has(scientistId)) {
@@ -237,13 +234,15 @@ export const validateContent = (dataset: ContentDataset): ValidationIssue[] => {
       );
     }
     if (!activity.image) {
-      issues.push(
-        issue(
-          'MISSING_ACTIVITY_IMAGE',
-          `activities[${index}].image`,
-          '活动必须提供图片对象。',
-        ),
-      );
+      if (activity.status === 'completed') {
+        issues.push(
+          issue(
+            'MISSING_ACTIVITY_IMAGE',
+            `activities[${index}].image`,
+            '已完成活动必须提供图片对象。',
+          ),
+        );
+      }
       return;
     }
     if (!activity.image.src.trim()) {

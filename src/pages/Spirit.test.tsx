@@ -21,7 +21,9 @@ function renderSpirit(entry = '/spirit') {
 it('restores the chosen theme from the URL and only shows explicitly linked stories', () => {
   renderSpirit('/spirit?theme=spirit-patriotism');
 
-  expect(screen.getByRole('button', { name: '胸怀祖国' })).toHaveAttribute(
+  expect(
+    screen.getByRole('button', { name: '胸怀祖国、服务人民' }),
+  ).toHaveAttribute(
     'aria-pressed',
     'true',
   );
@@ -39,12 +41,16 @@ it('pushes the selected theme into the URL and gives themes without stories an h
   const user = userEvent.setup();
   renderSpirit();
 
-  await user.click(screen.getByRole('button', { name: '育人传承' }));
+  await user.click(
+    screen.getByRole('button', { name: '甘为人梯、奖掖后学' }),
+  );
 
   expect(screen.getByLabelText('当前主题参数')).toHaveTextContent(
     '?theme=spirit-education',
   );
-  expect(screen.getByRole('button', { name: '育人传承' })).toHaveAttribute(
+  expect(
+    screen.getByRole('button', { name: '甘为人梯、奖掖后学' }),
+  ).toHaveAttribute(
     'aria-pressed',
     'true',
   );
@@ -52,5 +58,4 @@ it('pushes the selected theme into the URL and gives themes without stories an h
   const people = screen.getByRole('region', { name: '关联人物' });
   expect(within(people).getByRole('link', { name: '钱伟长' })).toBeVisible();
   expect(within(people).getByRole('link', { name: '李三立' })).toBeVisible();
-  expect(within(people).getByRole('link', { name: '杨雄里' })).toBeVisible();
 });

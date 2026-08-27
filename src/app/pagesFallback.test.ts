@@ -1,8 +1,58 @@
-import { restorePagesRoute } from './pagesFallback';
+import { getPagesRouteStorage, restorePagesRoute } from './pagesFallback';
 
 const storageKey = 'museum:pages-route';
 
 describe('GitHub Pages SPA fallback', () => {
+  it('treats denied session storage as no saved route', () => {
+    const deniedWindow = {
+      get sessionStorage(): Storage {
+        throw new DOMException('Access denied', 'SecurityError');
+      },
+    };
+
+    expect(getPagesRouteStorage(deniedWindow)).toBeUndefined();
+    expect(() =>
+      restorePagesRoute({
+        baseUrl: '/shu-scientist-museum/',
+        storage: undefined,
+        replace: () => undefined,
+      }),
+    ).not.toThrow();
+  });
+
+  it('does not abort when stored-route reads are denied', () => {
+    expect(() =>
+      restorePagesRoute({
+        baseUrl: '/shu-scientist-museum/',
+        storage: {
+          getItem: () => {
+            throw new DOMException('Access denied', 'SecurityError');
+          },
+          removeItem: () => undefined,
+        },
+        replace: () => undefined,
+      }),
+    ).not.toThrow();
+  });
+
+  it('restores a valid route even when stored-route cleanup is denied', () => {
+    const replacements: string[] = [];
+
+    expect(() =>
+      restorePagesRoute({
+        baseUrl: '/shu-scientist-museum/',
+        storage: {
+          getItem: () => JSON.stringify({ pathname: '/graph' }),
+          removeItem: () => {
+            throw new DOMException('Access denied', 'SecurityError');
+          },
+        },
+        replace: (url) => replacements.push(url),
+      }),
+    ).not.toThrow();
+    expect(replacements).toEqual(['/shu-scientist-museum/graph']);
+  });
+
   it('restores the saved route inside the configured base path exactly once', () => {
     const values = new Map([
       [

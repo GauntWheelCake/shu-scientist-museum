@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { createMemoryRouter, MemoryRouter, RouterProvider } from 'react-router-dom';
 import { withBasePath } from '../app/publicAsset';
-import { appRouter } from '../app/router';
+import { appRoutes } from '../app/router';
 import { Home } from './Home';
 
 function installReducedMotionPreference(matches: boolean): void {
@@ -62,7 +62,7 @@ it.each([
 it('serves the digital foyer at the configured root route', async () => {
   installReducedMotionPreference(true);
   const root = withBasePath('/');
-  const router = createMemoryRouter(appRouter.routes, {
+  const router = createMemoryRouter(appRoutes, {
     basename: root,
     initialEntries: [root],
   });
@@ -132,7 +132,7 @@ it('labels planned practice separately from completed activity', () => {
   expect(within(completed!).getByText('0')).toBeInTheDocument();
 });
 
-it('groups verified museum counts under an accessible label', () => {
+it('reports the retained timeline-event count without claiming every event is verified', () => {
   installReducedMotionPreference(true);
   render(
     <MemoryRouter>
@@ -140,7 +140,12 @@ it('groups verified museum counts under an accessible label', () => {
     </MemoryRouter>,
   );
 
-  expect(screen.getByRole('group', { name: '已核实展馆数据' })).toBeInTheDocument();
+  const facts = screen.getByRole('group', { name: '展馆数据' });
+  const eventCount = within(facts).getByText('个时间节点').closest('div');
+
+  expect(eventCount).not.toBeNull();
+  expect(within(eventCount!).getByText('5')).toBeInTheDocument();
+  expect(within(facts).queryByText('个已核实时间节点')).not.toBeInTheDocument();
 });
 
 it('explains the relationship graph in text', () => {

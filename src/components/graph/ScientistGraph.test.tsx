@@ -2,6 +2,7 @@ import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import { vi } from 'vitest';
+import { spiritThemes } from '../../content/spirit-themes';
 import type { Scientist, SpiritTheme } from '../../content/types';
 import { ScientistGraph } from './ScientistGraph';
 
@@ -120,6 +121,36 @@ it('keeps the root SVG as a named group so its links and buttons remain separate
   expect(
     within(svg).getByRole('button', { name: '选择精神主题：主题甲' }),
   ).toBeVisible();
+});
+
+it('wraps every official spirit title into two centered, readable lines', () => {
+  installViewport(false);
+  render(
+    <MemoryRouter>
+      <ScientistGraph scientists={scientists} themes={spiritThemes} />
+    </MemoryRouter>,
+  );
+
+  for (const theme of spiritThemes) {
+    const themeNode = screen.getByRole('button', {
+      name: `选择精神主题：${theme.title}`,
+    });
+    const lines = Array.from(themeNode.querySelectorAll('text > tspan'));
+
+    expect(lines).toHaveLength(2);
+    expect(lines.map((line) => line.textContent).join('、')).toBe(theme.title);
+    expect(lines.every((line) => (line.textContent?.length ?? 0) <= 4)).toBe(
+      true,
+    );
+    expect(lines.map((line) => line.getAttribute('x'))).toEqual([
+      '824',
+      '824',
+    ]);
+    expect(lines.map((line) => line.getAttribute('dy'))).toEqual([
+      '-0.55em',
+      '1.1em',
+    ]);
+  }
 });
 
 it('navigates to a scientist profile from a person node', async () => {

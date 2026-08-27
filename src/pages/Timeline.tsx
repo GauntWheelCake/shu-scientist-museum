@@ -10,7 +10,16 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 function eventYear(event: TimelineEvent): number {
   const match = event.dateLabel.match(/\d{4}/);
-  return match ? Number(match[0]) : Number.POSITIVE_INFINITY;
+  if (match) {
+    return Number(match[0]);
+  }
+
+  const chineseDecade = event.dateLabel.match(/(\d{2})世纪(\d{2})年代/);
+  if (chineseDecade) {
+    return (Number(chineseDecade[1]) - 1) * 100 + Number(chineseDecade[2]);
+  }
+
+  return Number.POSITIVE_INFINITY;
 }
 
 function sortedEvents(source: TimelineEvent[]): TimelineEvent[] {
