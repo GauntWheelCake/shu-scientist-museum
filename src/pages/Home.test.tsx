@@ -1,5 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
-import { MemoryRouter, RouterProvider } from 'react-router-dom';
+import { createMemoryRouter, MemoryRouter, RouterProvider } from 'react-router-dom';
+import { withBasePath } from '../app/publicAsset';
 import { appRouter } from '../app/router';
 import { Home } from './Home';
 
@@ -58,9 +59,14 @@ it.each([
   expect(screen.getByRole('region', { name })).toBeInTheDocument();
 });
 
-it('serves the digital foyer at the root route', async () => {
+it('serves the digital foyer at the configured root route', async () => {
   installReducedMotionPreference(true);
-  render(<RouterProvider router={appRouter} />);
+  const root = withBasePath('/');
+  const router = createMemoryRouter(appRouter.routes, {
+    basename: root,
+    initialEntries: [root],
+  });
+  render(<RouterProvider router={router} />);
 
   expect(
     await screen.findByRole('heading', {
