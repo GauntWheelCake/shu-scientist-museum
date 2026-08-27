@@ -132,7 +132,7 @@ it('labels planned practice separately from completed activity', () => {
   expect(within(completed!).getByText('0')).toBeInTheDocument();
 });
 
-it('groups verified museum counts under an accessible label', () => {
+it('reports the retained timeline-event count without claiming every event is verified', () => {
   installReducedMotionPreference(true);
   render(
     <MemoryRouter>
@@ -140,7 +140,12 @@ it('groups verified museum counts under an accessible label', () => {
     </MemoryRouter>,
   );
 
-  expect(screen.getByRole('group', { name: '已核实展馆数据' })).toBeInTheDocument();
+  const facts = screen.getByRole('group', { name: '展馆数据' });
+  const eventCount = within(facts).getByText('个时间节点').closest('div');
+
+  expect(eventCount).not.toBeNull();
+  expect(within(eventCount!).getByText('5')).toBeInTheDocument();
+  expect(within(facts).queryByText('个已核实时间节点')).not.toBeInTheDocument();
 });
 
 it('explains the relationship graph in text', () => {

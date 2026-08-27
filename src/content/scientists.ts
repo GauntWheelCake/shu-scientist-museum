@@ -53,7 +53,7 @@ export const scientists: Scientist[] = [
     id: 'scientist-li-sanli',
     slug: 'li-sanli',
     name: '李三立',
-    years: '2022年逝世',
+    years: '1935—2022',
     identity: '中国工程院院士，高性能计算领域先驱',
     summary:
       '从电子管计算机到集群式高性能计算机，他持续参与并推动中国计算机事业的发展。',
@@ -68,24 +68,12 @@ export const scientists: Scientist[] = [
     featured: true,
     chapters: [
       {
-        id: 'chapter-li-rescue-911',
-        title: '抢救911电子管计算机',
-        problem:
-          '1961年接手时，911机插件没有测试档案，控制信号不稳，并存在大量焊接问题。',
-        action:
-          '他组织学生逐个测量插件、建立档案，并请焊接师傅排查出两百多处虚焊。',
-        significance:
-          '911机于1964年研制成功并投入运行，为后续通用计算机研发奠定基础。',
-      },
-      {
         id: 'chapter-li-develop-724',
         title: '研制军用计算机724机',
-        problem:
-          '火箭发射基地需要规模大、指标高且能实时监控飞行器和卫星的专用计算机。',
-        action:
-          '他带领团队承担数百块印刷板和集成电路模块的研制与全机稳定性调试。',
+        problem: '20世纪70年代，我国高校大型计算机研制持续推进。',
+        action: '李三立曾负责研制724机。',
         significance:
-          '724机完成多项重要国防任务，成为当时高校用于尖端科研计算的大型计算机。',
+          '中国工程院记载，724机是20世纪70年代我国各大学中用于国家尖端科技规模最大的计算机。',
       },
       {
         id: 'chapter-li-ziqiang-supercomputers',
@@ -263,7 +251,8 @@ export const stories: Story[] = [
     id: 'story-li-building-chinese-computers',
     slug: 'li-building-chinese-computers',
     title: '为祖国造“超级大脑”',
-    summary: '从排查虚焊到建设高性能计算平台，见证中国计算机从无到有。',
+    summary:
+      '从研制724机到建设“自强”高性能计算平台，持续推动我国计算机事业发展。',
     scientistIds: ['scientist-li-sanli'],
     spiritIds: ['spirit-collaboration', 'spirit-dedication'],
   },

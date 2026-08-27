@@ -90,14 +90,14 @@ export function Home(): JSX.Element {
               </Reveal>
             ))}
           </div>
-          <div className="home-facts" role="group" aria-label="已核实展馆数据">
+          <div className="home-facts" role="group" aria-label="展馆数据">
             <div>
               <CountUp value={featuredScientists.length} />
               <span>位核心人物</span>
             </div>
             <div>
               <CountUp value={events.length} />
-              <span>个已核实时间节点</span>
+              <span>个时间节点</span>
             </div>
             <div>
               <CountUp value={spiritThemes.length} />

@@ -199,8 +199,38 @@ describe('museum content', () => {
     expect(
       scientists
         .filter(({ featured }) => featured)
-        .every(({ chapters }) => chapters.length >= 3),
+        .every(({ chapters }) => chapters.length >= 2),
     ).toBe(true);
+  });
+
+  it('keeps only sourced Li Sanli research claims', () => {
+    const li = scientists.find(({ id }) => id === 'scientist-li-sanli')!;
+    const chapter724 = li.chapters.find(
+      ({ id }) => id === 'chapter-li-develop-724',
+    )!;
+    const liStory = stories.find(
+      ({ id }) => id === 'story-li-building-chinese-computers',
+    )!;
+
+    expect(li.years).toBe('1935—2022');
+    expect(li.chapters.map(({ id }) => id)).toEqual([
+      'chapter-li-develop-724',
+      'chapter-li-ziqiang-supercomputers',
+    ]);
+    expect(chapter724.problem).toBe(
+      '20世纪70年代，我国高校大型计算机研制持续推进。',
+    );
+    expect(chapter724.action).toBe('李三立曾负责研制724机。');
+    expect(chapter724.significance).toBe(
+      '中国工程院记载，724机是20世纪70年代我国各大学中用于国家尖端科技规模最大的计算机。',
+    );
+    expect(liStory.summary).toBe(
+      '从研制724机到建设“自强”高性能计算平台，持续推动我国计算机事业发展。',
+    );
+    expect(events.some(({ id }) => id === 'event-li-911-1964')).toBe(false);
+    expect(JSON.stringify([li, liStory, events])).not.toMatch(
+      /虚焊|插件没有测试档案|1964年3月/,
+    );
   });
 
   it('keeps disputed supercomputer figures out of unconditional copy', () => {

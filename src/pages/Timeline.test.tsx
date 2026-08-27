@@ -14,13 +14,12 @@ it('sorts events by the first stated year while preserving source order within a
     events.map((event) => within(event).getByRole('heading').textContent),
   ).toEqual([
     '钱伟长回国任教',
-    '911电子管计算机投入运行',
     '《微波原理》出版',
     '国产单模光纤研制取得进展',
     '新上海大学合并组建',
     '自强3000进入全球TOP500',
   ]);
-  expect(within(events[3]).getByText('1980年前后')).toBeVisible();
+  expect(within(events[2]).getByText('1980年前后')).toBeVisible();
 });
 
 it('identifies the people attached to each event without inventing missing links', () => {
