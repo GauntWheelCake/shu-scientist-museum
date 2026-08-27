@@ -90,6 +90,8 @@ test('every visible internal link from museum pages navigates without an unexpec
   page,
   baseURL,
 }) => {
+  // This matrix discovers source links and navigates every distinct target.
+  test.slow();
   const runtimeErrors = guardRuntimeErrors(page);
   const internalTargets = new Map<string, string>();
 
